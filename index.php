@@ -1087,7 +1087,18 @@ function saveGroupVar(){
 	
 
 	$.post("ajs.php",{act:9032,GroupId:SelId,Book:Book,PreLocate:PreLocate,LoopType:TermLoopTypeVar,LoopValue:LoopValueVar,LocIntval:LocIntval,ReportIntval:ReportIntval,SleepIntval:SleepIntval,AlarmStat:TermAlarmStatVar},
-	function(s){if (s.indexOf("成功")>2){$('#idGroupVarEdit').css('display','none');termGotoPage(termPage);var bak=curPanel;curPanel=0;search_1();curPanel=bak;search_2();}alert(s);});
+	function(s){
+		if (s.indexOf("成功")>2){
+			$('#idGroupVarEdit').css('display','none');
+			termGotoPage(termPage);
+			var bak=curPanel;
+			curPanel=0;
+			search_1();
+			curPanel=bak;
+			search_2();
+			}
+			alert(s);
+			});
 }
 
 function saveGroupInfo(){
@@ -2148,7 +2159,8 @@ function saveEditTerm(){
 			serachTerm();
 		
 		}
-		alert(s);});
+		alert(s);
+	});
 }// termGotoPage(termPage);var bak=curPanel;curPanel=0;search_1();curPanel=bak;search_2();
 function saveNewTerm(){
 	var IMEI=$('#idTermIMEI').val();
