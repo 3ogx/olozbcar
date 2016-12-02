@@ -1,0 +1,155 @@
+/********* CSS-Reset ***********/
+*{font-family:"Microsoft YaHei",verdana, arial, helvetica, sans-serif;}
+html,body{width:100%;height:100%;font-size: 18px; color:#666666;background-color: #ffffff; }
+body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,label,form,input,button,textarea,p,section,strong,a{padding:0;margin:0;}
+h1,h2,h3,h4,h5,h6{font-weight:normal;}
+a{text-decoration: none;}/*此处待添加默认链接颜色*/
+var,em,i{font-style:normal;font-weight:normal;}
+s{text-decoration: none;}
+li{list-style:none;}
+button,textarea,select,input{display:inline-block;vertical-align:middle;font-family:"微软雅黑"; font-size:16px;font-style:normal;font-weight:normal;outline:none; border:none;}
+button{background: none;}
+.left{ float: left;}
+.right{ float: right;}
+*:link,*:visited,*:hover,*:active{-webkit-tap-highlight-color:transparent;}
+.fix{*zoom:1;}
+.fix:after{
+    display:block;
+    content:"clear";
+    height:0; clear:both;
+    /*overflow:hidden;*/
+    visibility:hidden;
+}
+.none{
+    display: none;
+}
+.blue{color:blue!important;}
+/*黑色蒙版*/
+.blackDiv{position: fixed;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background: rgba(0,0,0,0.8);
+         z-index: 99;}
+.whiteDiv{
+  position: fixed;
+  width: 20%;
+  padding: 20px;
+  background: white;
+  top: 200px;
+  top: 130px\9;
+  left: 30%;
+  border-radius: 10px;
+  border: 1px solid #dcdcdc;
+  z-index: 100;
+}         
+/*login*/
+.all_top{width:100% ;
+         min-height: 804px;
+         background: url(../images/bg.jpg) no-repeat;
+         background-size: 100% 100%;}
+.logoDiv{width:100%;
+         height: 7%;
+         background-color:#36b08b;
+         padding: 2% 0 0 0;
+		 margin-bottom:2%
+         }  
+.con_in{width: 57%;
+        margin: 0 auto;
+        overflow: hidden;
+        padding-bottom:10px;
+       }  
+.logo{display:block;               
+      }
+.loginDiv{width: 370px;
+          height: 326px;
+          background: url(../images/loginbg_03.png) no-repeat ;
+          margin: 6% 0 0 0;
+          padding: 50px 0 0 0;
+          position: relative;}   
+.register{display: block;
+         height: 38px;
+         line-height: 230%\9;
+         width: 258px;
+         border: 2px solid #b1b3b8;
+         border-radius: 5px;
+         margin: 30px 0 0 68px; 
+         padding: 0 0 0 10px;
+         color: #444;
+     }  
+.remember,.loginbtn,.lastdiv{width: 268px;
+          margin: 20px 0 0 68px; }  
+.loginbtn{height: 40px;
+          margin-top: 30px;
+	      background: url(../images/login.jpg) no-repeat;} 
+.lastdiv{overflow: hidden;
+         }
+.lastdiv a{width: 33.3%;
+           float: left;
+           font-size: 14px;
+           color:#247b4c;} 
+.code{width: 57%;
+      height:140px ;
+      background: url(../images/codebg_03.png) no-repeat;
+      margin: 0 auto;
+      position: absolute;
+      top: -140px;
+      left:300px;
+    } 
+.code ul{overflow: hidden;}      
+.code ul li{float: left;
+            width: 45%;
+            overflow: hidden;
+            padding-left: 5%;}  
+.code ul li img{margin: 10px 40px 0 0 ;}
+.appDIV{height: 100%;
+       background: url(../images/line.jpg) no-repeat left center;    
+       padding: 0 0 0 20px;
+       float: left;
+       color: white;
+       padding: 20px 0 95px 20px;} 
+.footer{height:10%;
+        background:#36b08b;
+        padding: 2% 0 0 0;
+        position: relative;}   
+/*忘记密码*/                                                                 
+.passwordDIV{width:351px ;
+             height: 230px;
+             margin: 6% auto 0;
+             background: url(../images/pass.jpg) no-repeat center center;
+             padding:80px 20px;
+             position: relative;}
+.info{margin: 30px 0;}             
+.info input{height: 38px;
+            line-height: 230%\9;
+	       width: 258px;
+	       border: 2px solid #b1b3b8;
+	       border-radius: 5px;
+	       margin: 0 auto ; 
+	       padding: 0 0 0 10px;
+		   padding-top:5px\9;
+		   padding-top:5px\0;
+           display: inline-block;
+           vertical-align: middle;}
+.red{color: red!important;
+     font-size: 12px;}
+.passbtn{width:268px;
+        height: 40px;
+        background: url(../images/button_03.jpg) no-repeat;
+        margin: 0 0 0 68px; 
+        color: #ffffff;}
+.passwordDIV img{display: block;
+                 margin: 30px auto;}
+.passwordDIV p{text-align: center;}
+.loginbtn2{background: url(../images/btn.jpg) no-repeat;
+          color: #ffffff;
+          }
+.passwordDIV1{height: 270px;
+              padding:60px 20px;}          
+.passwordDIV1 .info{margin: 10px 0;
+                    }
+#close{position: absolute;
+       top: 4%;
+       right: 4%;
+       color: #666666;}
