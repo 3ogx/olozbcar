@@ -1264,72 +1264,89 @@ function locateTerm(IMEI,Stat){
 }
  function createInfoWindow(IMEI, Stat,Addr,Time,Lon,Lat,Power,AccStat) {
 	
-		map.clearInfoWindow();
-       if (Lon==''){
-		   Alert('无此车辆定位信息', true);
-		   return 0;
-	   }
- var info = document.createElement("div");
-        info.className = "info";
-		closeInfoWindow();
-		if (AccStat=='0') AccStat='关闭';
-		else if (AccStat=='1') AccStat='打开';
-		else AccStat='空';	
-        //可以通过下面的方式修改自定义窗体的宽高
-        //info.style.width = "400px";
-        // 定义顶部标题
-        var top = document.createElement("div");
-        var titleD = document.createElement("div");
-        var closeX = document.createElement("img");
-        top.className = "info-top";
-        titleD.innerHTML = IMEI;
-        closeX.src = "http://webapi.amap.com/images/close2.gif";
-        closeX.onclick = closeInfoWindow;
+	 map.clearInfoWindow();
+	 if (Lon==''){
+		 Alert('无此车辆定位信息', true);
+		 return 0;
+	 }
+	 var info = document.createElement("div");
+	 info.className = "info";
+	 closeInfoWindow();
+	 if (AccStat=='0') AccStat='关闭';
+	 else if (AccStat=='1') AccStat='打开';
+	 else AccStat='空';	
+	 //可以通过下面的方式修改自定义窗体的宽高
+	 //info.style.width = "400px";
+	 // 定义顶部标题
+	 var top = document.createElement("div");
+	 var titleD = document.createElement("div");
+	 var closeX = document.createElement("img");
+	 top.className = "info-top";
+	 titleD.innerHTML = IMEI;
+	 closeX.src = "http://webapi.amap.com/images/close2.gif";
+	 closeX.onclick = closeInfoWindow;
 
-        top.appendChild(titleD);
-        top.appendChild(closeX);
-        info.appendChild(top);
+	 top.appendChild(titleD);
+	 top.appendChild(closeX);
+	 info.appendChild(top);
 
-        // 定义中部内容
-        var middle = document.createElement("div");
-        middle.className = "info-middle";
-        middle.style.backgroundColor = 'white';
-        middle.innerHTML = '<div class="inDiv" ><label for="name">状态: </label> <label for="name"> '+Stat+'</label></div>'+
-		'<div class="inDiv" ><label for="name">地址: </label> <label for="name"> '+Addr+'</label></div>'+
-		'<div class="inDiv" ><label for="name">ACC状态: </label> <label for="name"> '+AccStat+'</label></div>'+
-		'<div class="inDiv" ><label for="name">电量: </label> <label for="name"> '+Power+'%</label></div>'+
-		'<div class="inDiv" ><label for="name">时间: </label> <label for="name"> '+Time+'</label></div>';
-        info.appendChild(middle);
+	 // 定义中部内容
+	 var middle = document.createElement("div");
+	 middle.className = "info-middle";
+	 middle.style.backgroundColor = 'white';
+	 middle.innerHTML = '<div class="inDiv" ><label for="name">状态: </label> <label for="name"> '+Stat+'</label></div>'+
+		 '<div class="inDiv" ><label for="name">地址: </label> <label for="name"> '+Addr+'</label></div>'+
+		 '<div class="inDiv" ><label for="name">ACC状态: </label> <label for="name"> '+AccStat+'</label></div>'+
+		 '<div class="inDiv" ><label for="name">电量: </label> <label for="name"> '+Power+'%</label></div>'+
+		 '<div class="inDiv" ><label for="name">时间: </label> <label for="name"> '+Time+'</label></div>';
+	 info.appendChild(middle);
 
-        // 定义底部内容
-        var bottom = document.createElement("div");
-        bottom.className = "info-bottom";
-        bottom.style.position = 'relative';
-        bottom.style.top = '0px';
-        bottom.style.margin = '0 auto';
-        var sharp = document.createElement("img");
-        sharp.src = "http://webapi.amap.com/images/sharp.png";
-        bottom.appendChild(sharp);
-        info.appendChild(bottom);
-        //可以通过下面的方式修改自定义窗体的宽高
-        //info.style.width = "400px";
-        // 定义顶部标题
-       
-       
-		var infoWindow = new AMap.InfoWindow({
-			isCustom: true,  //使用自定义窗体
-			content: info,
-			offset: new AMap.Pixel(16,-45)
-			});
-		
-        var marker = new AMap.Marker({
-            map: map,
-            position: [Lat,Lon]
-			});	
-		  infoWindow.open(map,marker.getPosition());
-		  map.setCenter([Lat,Lon]);
-        return info;
-    }
+	 // 定义底部内容
+	 var bottom = document.createElement("div");
+	 bottom.className = "info-bottom";
+	 bottom.style.position = 'relative';
+	 bottom.style.top = '0px';
+	 bottom.style.margin = '0 auto';
+	 var sharp = document.createElement("img");
+	 sharp.src = "http://webapi.amap.com/images/sharp.png";
+	 bottom.appendChild(sharp);
+	 info.appendChild(bottom);
+	 //可以通过下面的方式修改自定义窗体的宽高
+	 //info.style.width = "400px";
+	 // 定义顶部标题
+
+
+	 var marker = new AMap.Marker({
+		 map: map,
+		 position: [Lat,Lon]
+	 });	
+
+	 var _click = function(e) {
+		 map.clearInfoWindow();
+		 var infoWindow = new AMap.InfoWindow({
+			 isCustom: true,  //使用自定义窗体
+				 autoMove: true,
+				 position: [Lat, Lon],
+				 content: info,
+				 offset: new AMap.Pixel(16,-45)
+		 });
+		 infoWindow.open(map,e.target.getPosition());
+	 }
+	 marker.on("click", _click);
+	 map.setCenter([Lat,Lon]);
+	 setTimeout(function(){
+		 map.clearInfoWindow();
+		 var infoWindow = new AMap.InfoWindow({
+			 isCustom: true,  //使用自定义窗体
+				 autoMove: true,
+				 position: [Lat, Lon],
+				 content: info,
+				 offset: new AMap.Pixel(16,-45)
+		 });
+		 infoWindow.open(map,marker.getPosition());
+	 }, 500);
+	 return info;
+ }
  function closeInfoWindow() {
         map.clearInfoWindow();
 		map.clearMap();
@@ -1706,9 +1723,12 @@ function editSafeArea(IMEI, lon, lat){
 				$('#idSafeAreaCity').val(data['city']);
 			});	
 		//}
+			if (map) {
+				map.clearInfoWindow();
+			}
 		
 		
-		});			
+		});
 
 } 
 //日历控件
