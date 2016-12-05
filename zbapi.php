@@ -188,7 +188,9 @@ class zbapi
 		for ($k=0;$k<5;$k++){
 			
 			
-			if (!$this->fp) $this->fp=stream_socket_client($this->uri, $errno, $errstr);
+			if (!$this->fp) $this->fp=stream_socket_client($this->uri, $errno, $errstr, 5);
+			//stream_set_blocking($this->fp, true);
+			//stream_set_timeout($this->fp, 3);
 			if(!$this->fp)
 			  {
 				echo "erreur : $errno - $errstr<br />n";

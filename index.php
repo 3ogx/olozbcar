@@ -399,7 +399,7 @@ onkeyup="if (this.value.match(/[^0-9]/g))this.value=this.value.replace(/[^0-9]/g
         </div> 
 		<div class="inDiv" id="idTermNumPanel">
             <label for="name">车牌号码:</label>
-            <input type="text" id="idTermNum"  maxlength="8" onkeyup="if (this.value.match(/[^0-9a-zA-Z]/g))this.value=this.value.replace(/[^0-9a-zA-Z]/g,'');" onpaste="return false" /> 
+            <input type="text" id="idTermNum"  maxlength="8" onkeyup="if (this.value.match(/[^0-9a-zA-Z\u4e00-\u9fa5]/g))this.value=this.value.replace(/[^0-9a-zA-Z\u4e00-\u9fa5]/g,'');" onpaste="return false" /> 
         </div> 		
 		
 		<div class="inDiv" id="idTermPhonePanel">
@@ -870,6 +870,7 @@ onkeyup="if (this.value.match(/[^0-9]/g))this.value=this.value.replace(/[^0-9]/g
 	var timeArr = [];
 	var AddrTimes = [];
 	
+	var groups = <?php echo json_encode($zbapi->groupinfo);?>;
 	var arrPosArr =  new Array([720]);
 	var map = new AMap.Map('idMap', {
         resizeEnable: true,
@@ -1023,28 +1024,40 @@ function setLoopTypeVar(LoopType){
 	
 }
 function editGroupVar(){
-	var groups = <?php echo json_encode($zbapi->groupinfo);?>;
 	var SelId=$("#idSelectGroup").val();
 	if (SelId<1){
 		alert("请先选择要设置参数的分组.");
 		return 0;
 	}
 
-	var oldValue = groups[SelId] || '-1';
-	$('#idGroupNameVar').val($("#idSelectGroup").find("option:selected").text());
-	TermAlarmStatVar=-1;
-	TermLoopTypeVar=-1;
-	$('#idTermBookVar').val('');
-	$('#idPreLocateVar').val(oldValue['PreLocate']);
-	$('#idLocIntvalVar').val(oldValue['LocIntval']);
-	
-	$('#idLoopValueVar').val(oldValue['LoopValue']);
-	$('#idLoopTypeVar_'+oldValue['LoopType']).prop('checked','checked');
-	$('#idAlarmStatVar_'+oldValue['AlarmState']).prop('checked','checked');
-	$('#idReportIntvalVar').val(oldValue['ReportIntval']);
-	$('#idSleepIntvalVar').val(oldValue['SleepIntval']);
-	$('#idGroupVarEdit').css('display','');
-	$("#idTermBookVar").focus();	
+	var newGroupValue = '';
+	$("#idTermEdit").showLoading();
+	$.post("ajs.php",{ act:9040,groupId:SelId,}, function(data) {
+		data = data.split("\n");
+		var rets = [];
+		for( var i=0; i < data.length; i++) {
+			if (data[i] == "") continue;
+			rets.push(data[i]);
+		}
+		newGroupValue = eval("("+rets.join("") + ")");
+		$("#idTermEdit").hideLoading();
+
+		var oldValue = newGroupValue;
+		$('#idGroupNameVar').val($("#idSelectGroup").find("option:selected").text());
+		TermAlarmStatVar=-1;
+		TermLoopTypeVar=-1;
+		$('#idTermBookVar').val('');
+		$('#idPreLocateVar').val(oldValue['PreLocate']);
+		$('#idLocIntvalVar').val(oldValue['LocIntval']);
+
+		$('#idLoopValueVar').val(oldValue['LoopValue']);
+		$('#idLoopTypeVar_'+oldValue['LoopType']).prop('checked','checked');
+		$('#idAlarmStatVar_'+oldValue['AlarmState']).prop('checked','checked');
+		$('#idReportIntvalVar').val(oldValue['ReportIntval']);
+		$('#idSleepIntvalVar').val(oldValue['SleepIntval']);
+		$('#idGroupVarEdit').css('display','');
+		$("#idTermBookVar").focus();	
+	});
 }	
 function saveGroupVar(){
 	var SelId=$("#idSelectGroup").val();
@@ -1996,29 +2009,29 @@ function saveImportTerm(){
 		}
 
 		if (_tmps[1] != "" && !checkPlate(_tmps[1])) {
-			Alert('车牌号码不正确', false);
-			return;
+			//Alert('车牌号码不正确', false);
+			//return;
 		}
 
 		if (_tmps[2] != "" && !checkPhone(_tmps[2])) {
-			Alert('设置号码不正确', false);
-			return;
+			//Alert('设置号码不正确', false);
+			//return;
 		}
 
 		if (_tmps[3].trim() != '' && !checkPhone(_tmps[3])) {
-			Alert('监听号码不正确', false);
-			return;
+			//Alert('监听号码不正确', false);
+			//return;
 		}
 
 		if (_tmps.length > 4) {
 			if (_tmps[4].trim() != '' && !checkPhone(_tmps[4])) {
-				Alert('监听号码不正确', false);
-				return;
+				//Alert('监听号码不正确', false);
+				//return;
 			}
 
 			if (_tmps[5].trim() != '' && !checkPhone(_tmps[5])) {
-				Alert('监听号码不正确', false);
-				return;
+				//Alert('监听号码不正确', false);
+				//return;
 			}
 		}
 
@@ -2117,13 +2130,13 @@ function saveEditTerm(){
 		return 0;
 	}
 	if (Num != "" && !checkPlate(Num)) {
-		Alert("车牌号码不正确", false);
-		return;
+		//Alert("车牌号码不正确", false);
+		//return;
 	}
 
 	if (Phone != "" && !checkPhone(Phone)) {
-		Alert("设备号码不正确", false);
-		return;
+		//Alert("设备号码不正确", false);
+		//return;
 	}
 
 	var books = Book.split(",");
@@ -2133,8 +2146,8 @@ function saveEditTerm(){
 		}
 
 		if (!checkPhone(books[i])) {
-			Alert("监听号码不正确", false);
-			return;
+			//Alert("监听号码不正确", false);
+			//return;
 		}
 	}
 
@@ -2202,13 +2215,13 @@ function saveNewTerm(){
 	}
 
 	if (Num != "" && !checkPlate(Num)) {
-		Alert("车牌号码不正确", false);
-		return;
+		//Alert("车牌号码不正确", false);
+		//return;
 	}
 
 	if (Phone != "" && !checkPhone(Phone)) {
-		Alert("设备号码不正确", false);
-		return;
+		//Alert("设备号码不正确", false);
+		//return;
 	}
 
 	var books = Book.split(",");
@@ -2218,8 +2231,8 @@ function saveNewTerm(){
 		}
 
 		if (!checkPhone(books[i])) {
-			Alert("监听号码不正确", false);
-			return;
+			//Alert("监听号码不正确", false);
+			//return;
 		}
 	}
 

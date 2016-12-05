@@ -10,7 +10,8 @@ if ($_POST){
 	else if ($_REQUEST['Phone']=='') $JS= "alert('手机号不能为空！');";
 	else if ($_REQUEST['Email']=='') $JS= "alert('Email不能为空！');";
 	else {
-
+		$Account = $_REQUEST['Account'];
+		$password = $_REQUEST['password'];
 		$zbapi=new zbapi($Account,$password);
 		$ret=json_decode($zbapi->req(142,'{"Account":"'.$_REQUEST['Account'].'","Pwd":"'.$_REQUEST['password'].'","Name":"'.$_REQUEST['Name'].'","Phone":"'.$_REQUEST['Phone'].'","Email":"'.$_REQUEST['Email'].'"}'),true);
 		if ($ret['Code']=='0'){

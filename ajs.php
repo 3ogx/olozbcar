@@ -1072,7 +1072,20 @@ case 9034:
 		echo '设置继电器密码 成功！';
 	}
 	else echo errstr($ret['Code']);
-break;	
+	break;	
+case 9040:
+	$groupId = $_REQUEST['groupId'];
+	require_once("zbapi.php");
+	$zbapi=new zbapi($_SESSION['zbAcc'],$_SESSION['zbPwd']);
+	$zbapi->login();
+	$zbapi->loadDevInfo();
+	$devinfo=$zbapi->groupinfo;
+	if ($groupId) {
+		echo json_encode($devinfo[$groupId]);
+	} else {
+		echo json_encode($devinfo);
+	}
+	break;
 }
 
 
