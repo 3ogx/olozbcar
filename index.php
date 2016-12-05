@@ -1966,18 +1966,36 @@ function serachTerm(){
 function termGotoPage(p){
 	var k=$('#idTermKey').val();
 	var ID=$('#idSelectGroup').val();
-	$.post("ajs.php",{act:9003,page:p,Key:k,Group:ID}, function(s){
-		$("#idTermList").html(s);
-		if ($("#idTermList table").find("tr").length <= 1) {
-			if (p-1 <= 0) {
-				termGotoPage(1);
-				termPage=1;
-			} else {
-				termGotoPage(p-1);
-				termPage=p;
+	if (p <= 1) {
+		$.post("ajs.php",{act:9003,page:1,Key:k,Group:ID}, function(s){
+			$("#idTermList").html(s);
+		});
+	} else {
+		$.post("ajs.php",{act:9003,page:p-1,Key:k,Group:ID}, function(s){
+			$("#idTermList").html(s);
+			if ($("#idTermList table").find("tr").length <= 1) {
+				if (p-1 < 0) {
+					termGotoPage(1);
+					termPage=1;
+				} else {
+					termGotoPage(p-1);
+					termPage=p;
+				}
 			}
-		}
-	});
+		});
+	}
+	//$.post("ajs.php",{act:9003,page:p,Key:k,Group:ID}, function(s){
+	//    $("#idTermList").html(s);
+	//    if ($("#idTermList table").find("tr").length <= 1) {
+	//        if (p-1 < 0) {
+	//            termGotoPage(1);
+	//            termPage=1;
+	//        } else {
+	//            termGotoPage(p-1);
+	//            termPage=p;
+	//        }
+	//    }
+	//});
 	
 }
 function importTerm(){
@@ -2324,7 +2342,7 @@ function editTerm(IMEI,Num){
 							break;
 						}
 					}
-					if (_books.length > 1) {
+					if (_books.length > 0) {
 						$('#idTermBook').val(_books.join(","));
 					} else {
 						$('#idTermBook').val("");

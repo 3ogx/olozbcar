@@ -20,7 +20,7 @@ function checkPhone(number) {
 }
 
 function checkImei(imei) {
-	var pattern = /[\w\d]{1,16}/;
+	var pattern = /[\w\d]{1,25}/;
 	if (!pattern.test(imei)) {
 		return false;
 	}
