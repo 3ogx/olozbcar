@@ -2008,32 +2008,32 @@ function saveImportTerm(){
 			return;
 		}
 
-		if (_tmps[1] != "" && !checkPlate(_tmps[1])) {
+		//if (_tmps[1] != "" && !checkPlate(_tmps[1])) {
 			//Alert('车牌号码不正确', false);
 			//return;
-		}
+		//}
 
-		if (_tmps[2] != "" && !checkPhone(_tmps[2])) {
+		//if (_tmps[2] != "" && !checkPhone(_tmps[2])) {
 			//Alert('设置号码不正确', false);
 			//return;
-		}
+		//}
 
-		if (_tmps[3].trim() != '' && !checkPhone(_tmps[3])) {
+		//if (_tmps[3].trim() != '' && !checkPhone(_tmps[3])) {
 			//Alert('监听号码不正确', false);
 			//return;
-		}
+		//}
 
-		if (_tmps.length > 4) {
-			if (_tmps[4].trim() != '' && !checkPhone(_tmps[4])) {
+		//if (_tmps.length > 4) {
+			//if (_tmps[4].trim() != '' && !checkPhone(_tmps[4])) {
 				//Alert('监听号码不正确', false);
 				//return;
-			}
+			//}
 
-			if (_tmps[5].trim() != '' && !checkPhone(_tmps[5])) {
+			//if (_tmps[5].trim() != '' && !checkPhone(_tmps[5])) {
 				//Alert('监听号码不正确', false);
 				//return;
-			}
-		}
+			//}
+		//}
 
 		var datas = [];
 		for (var j=0; j < _tmps.length; j++) {
