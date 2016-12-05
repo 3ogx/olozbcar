@@ -2036,7 +2036,7 @@ function termGotoPage(p){
 			$("#idTermList").html(s);
 		});
 	} else {
-		$.post("ajs.php",{act:9003,page:p-1,Key:k,Group:ID}, function(s){
+		$.post("ajs.php",{act:9003,page:p,Key:k,Group:ID}, function(s){
 			$("#idTermList").html(s);
 			if ($("#idTermList table").find("tr").length <= 1) {
 				if (p-1 < 0) {
