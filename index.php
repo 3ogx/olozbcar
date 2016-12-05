@@ -1389,11 +1389,11 @@ function doplayTrack(speed){
 			TrackPos=timeArr[0];
 			t(TrackPos);	
 			map.setCenter(lineArr[arrPosArr[TrackPos]]);			
-		} 
-		else {
-			TrackPos++;
+		} else {
+			TrackPos++ ;
 			for (var i=0;i<60 && TrackPos<720;i++) {
 				if(arrPosArr[TrackPos]>=0) {
+					TrackPos += speed;
 					break; 
 				} else {
 					TrackPos += speed;
