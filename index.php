@@ -401,7 +401,7 @@ onkeyup="if (this.value.match(/[^0-9]/g))this.value=this.value.replace(/[^0-9]/g
         </div> 
 		<div class="inDiv" id="idTermNumPanel">
             <label for="name">车牌号码:</label>
-            <input type="text" id="idTermNum"  maxlength="8" onkeyup="if (this.value.match(/[^0-9a-zA-Z]/g))this.value=this.value.replace(/[^0-9a-zA-Z]/g,'');" onpaste="return false" /> 
+            <input type="text" id="idTermNum"  maxlength="8" onkeyup="if (this.value.match(/[^0-9a-zA-Z\u4e00-\u9fa5]/g))this.value=this.value.replace(/[^0-9a-zA-Z\u4e00-\u9fa5]/g,'');" onpaste="return false" /> 
         </div> 		
 		
 		<div class="inDiv" id="idTermPhonePanel">
@@ -872,6 +872,7 @@ onkeyup="if (this.value.match(/[^0-9]/g))this.value=this.value.replace(/[^0-9]/g
 	var timeArr = [];
 	var AddrTimes = [];
 	
+	var groups = <?php echo json_encode($zbapi->groupinfo);?>;
 	var arrPosArr =  new Array([720]);
 	var map = new AMap.Map('idMap', {
         resizeEnable: true,
@@ -1026,28 +1027,40 @@ function setLoopTypeVar(LoopType){
 	
 }
 function editGroupVar(){
-	var groups = <?php echo json_encode($zbapi->groupinfo);?>;
 	var SelId=$("#idSelectGroup").val();
 	if (SelId<1){
 		alert("请先选择要设置参数的分组.");
 		return 0;
 	}
 
-	var oldValue = groups[SelId] || '-1';
-	$('#idGroupNameVar').val($("#idSelectGroup").find("option:selected").text());
-	TermAlarmStatVar=-1;
-	TermLoopTypeVar=-1;
-	$('#idTermBookVar').val('');
-	$('#idPreLocateVar').val(oldValue['PreLocate']);
-	$('#idLocIntvalVar').val(oldValue['LocIntval']);
-	
-	$('#idLoopValueVar').val(oldValue['LoopValue']);
-	$('#idLoopTypeVar_'+oldValue['LoopType']).prop('checked','checked');
-	$('#idAlarmStatVar_'+oldValue['AlarmState']).prop('checked','checked');
-	$('#idReportIntvalVar').val(oldValue['ReportIntval']);
-	$('#idSleepIntvalVar').val(oldValue['SleepIntval']);
-	$('#idGroupVarEdit').css('display','');
-	$("#idTermBookVar").focus();	
+	var newGroupValue = '';
+	$("#idTermEdit").showLoading();
+	$.post("ajs.php",{ act:9040,groupId:SelId,}, function(data) {
+		data = data.split("\n");
+		var rets = [];
+		for( var i=0; i < data.length; i++) {
+			if (data[i] == "") continue;
+			rets.push(data[i]);
+		}
+		newGroupValue = eval("("+rets.join("") + ")");
+		$("#idTermEdit").hideLoading();
+
+		var oldValue = newGroupValue;
+		$('#idGroupNameVar').val($("#idSelectGroup").find("option:selected").text());
+		TermAlarmStatVar=-1;
+		TermLoopTypeVar=-1;
+		$('#idTermBookVar').val('');
+		$('#idPreLocateVar').val(oldValue['PreLocate']);
+		$('#idLocIntvalVar').val(oldValue['LocIntval']);
+
+		$('#idLoopValueVar').val(oldValue['LoopValue']);
+		$('#idLoopTypeVar_'+oldValue['LoopType']).prop('checked','checked');
+		$('#idAlarmStatVar_'+oldValue['AlarmState']).prop('checked','checked');
+		$('#idReportIntvalVar').val(oldValue['ReportIntval']);
+		$('#idSleepIntvalVar').val(oldValue['SleepIntval']);
+		$('#idGroupVarEdit').css('display','');
+		$("#idTermBookVar").focus();	
+	});
 }	
 function saveGroupVar(){
 	var SelId=$("#idSelectGroup").val();
@@ -1090,7 +1103,18 @@ function saveGroupVar(){
 	
 
 	$.post("ajs.php",{act:9032,GroupId:SelId,Book:Book,PreLocate:PreLocate,LoopType:TermLoopTypeVar,LoopValue:LoopValueVar,LocIntval:LocIntval,ReportIntval:ReportIntval,SleepIntval:SleepIntval,AlarmStat:TermAlarmStatVar},
-	function(s){if (s.indexOf("成功")>2){$('#idGroupVarEdit').css('display','none');termGotoPage(termPage);var bak=curPanel;curPanel=0;search_1();curPanel=bak;search_2();}alert(s);});
+	function(s){
+		if (s.indexOf("成功")>2){
+			$('#idGroupVarEdit').css('display','none');
+			termGotoPage(termPage);
+			var bak=curPanel;
+			curPanel=0;
+			search_1();
+			curPanel=bak;
+			search_2();
+			}
+			alert(s);
+			});
 }
 
 function saveGroupInfo(){
@@ -1256,72 +1280,89 @@ function locateTerm(IMEI,Stat){
 }
  function createInfoWindow(IMEI, Stat,Addr,Time,Lon,Lat,Power,AccStat) {
 	
-		map.clearInfoWindow();
-       if (Lon==''){
-		   Alert('无此车辆定位信息', true);
-		   return 0;
-	   }
- var info = document.createElement("div");
-        info.className = "info";
-		closeInfoWindow();
-		if (AccStat=='0') AccStat='关闭';
-		else if (AccStat=='1') AccStat='打开';
-		else AccStat='空';	
-        //可以通过下面的方式修改自定义窗体的宽高
-        //info.style.width = "400px";
-        // 定义顶部标题
-        var top = document.createElement("div");
-        var titleD = document.createElement("div");
-        var closeX = document.createElement("img");
-        top.className = "info-top";
-        titleD.innerHTML = IMEI;
-        closeX.src = "http://webapi.amap.com/images/close2.gif";
-        closeX.onclick = closeInfoWindow;
+	 map.clearInfoWindow();
+	 if (Lon==''){
+		 Alert('无此车辆定位信息', true);
+		 return 0;
+	 }
+	 var info = document.createElement("div");
+	 info.className = "info";
+	 closeInfoWindow();
+	 if (AccStat=='0') AccStat='关闭';
+	 else if (AccStat=='1') AccStat='打开';
+	 else AccStat='空';	
+	 //可以通过下面的方式修改自定义窗体的宽高
+	 //info.style.width = "400px";
+	 // 定义顶部标题
+	 var top = document.createElement("div");
+	 var titleD = document.createElement("div");
+	 var closeX = document.createElement("img");
+	 top.className = "info-top";
+	 titleD.innerHTML = IMEI;
+	 closeX.src = "http://webapi.amap.com/images/close2.gif";
+	 closeX.onclick = closeInfoWindow;
 
-        top.appendChild(titleD);
-        top.appendChild(closeX);
-        info.appendChild(top);
+	 top.appendChild(titleD);
+	 top.appendChild(closeX);
+	 info.appendChild(top);
 
-        // 定义中部内容
-        var middle = document.createElement("div");
-        middle.className = "info-middle";
-        middle.style.backgroundColor = 'white';
-        middle.innerHTML = '<div class="inDiv" ><label for="name">状态: </label> <label for="name"> '+Stat+'</label></div>'+
-		'<div class="inDiv" ><label for="name">地址: </label> <label for="name"> '+Addr+'</label></div>'+
-		'<div class="inDiv" ><label for="name">ACC状态: </label> <label for="name"> '+AccStat+'</label></div>'+
-		'<div class="inDiv" ><label for="name">电量: </label> <label for="name"> '+Power+'%</label></div>'+
-		'<div class="inDiv" ><label for="name">时间: </label> <label for="name"> '+Time+'</label></div>';
-        info.appendChild(middle);
+	 // 定义中部内容
+	 var middle = document.createElement("div");
+	 middle.className = "info-middle";
+	 middle.style.backgroundColor = 'white';
+	 middle.innerHTML = '<div class="inDiv" ><label for="name">状态: </label> <label for="name"> '+Stat+'</label></div>'+
+		 '<div class="inDiv" ><label for="name">地址: </label> <label for="name"> '+Addr+'</label></div>'+
+		 '<div class="inDiv" ><label for="name">ACC状态: </label> <label for="name"> '+AccStat+'</label></div>'+
+		 '<div class="inDiv" ><label for="name">电量: </label> <label for="name"> '+Power+'%</label></div>'+
+		 '<div class="inDiv" ><label for="name">时间: </label> <label for="name"> '+Time+'</label></div>';
+	 info.appendChild(middle);
 
-        // 定义底部内容
-        var bottom = document.createElement("div");
-        bottom.className = "info-bottom";
-        bottom.style.position = 'relative';
-        bottom.style.top = '0px';
-        bottom.style.margin = '0 auto';
-        var sharp = document.createElement("img");
-        sharp.src = "http://webapi.amap.com/images/sharp.png";
-        bottom.appendChild(sharp);
-        info.appendChild(bottom);
-        //可以通过下面的方式修改自定义窗体的宽高
-        //info.style.width = "400px";
-        // 定义顶部标题
-       
-       
-		var infoWindow = new AMap.InfoWindow({
-			isCustom: true,  //使用自定义窗体
-			content: info,
-			offset: new AMap.Pixel(16,-45)
-			});
-		
-        var marker = new AMap.Marker({
-            map: map,
-            position: [Lat,Lon]
-			});	
-		  infoWindow.open(map,marker.getPosition());
-		  map.setCenter([Lat,Lon]);
-        return info;
-    }
+	 // 定义底部内容
+	 var bottom = document.createElement("div");
+	 bottom.className = "info-bottom";
+	 bottom.style.position = 'relative';
+	 bottom.style.top = '0px';
+	 bottom.style.margin = '0 auto';
+	 var sharp = document.createElement("img");
+	 sharp.src = "http://webapi.amap.com/images/sharp.png";
+	 bottom.appendChild(sharp);
+	 info.appendChild(bottom);
+	 //可以通过下面的方式修改自定义窗体的宽高
+	 //info.style.width = "400px";
+	 // 定义顶部标题
+
+
+	 var marker = new AMap.Marker({
+		 map: map,
+		 position: [Lat,Lon]
+	 });	
+
+	 var _click = function(e) {
+		 map.clearInfoWindow();
+		 var infoWindow = new AMap.InfoWindow({
+			 isCustom: true,  //使用自定义窗体
+				 autoMove: true,
+				 position: [Lat, Lon],
+				 content: info,
+				 offset: new AMap.Pixel(16,-45)
+		 });
+		 infoWindow.open(map,e.target.getPosition());
+	 }
+	 marker.on("click", _click);
+	 map.setCenter([Lat,Lon]);
+	 setTimeout(function(){
+		 map.clearInfoWindow();
+		 var infoWindow = new AMap.InfoWindow({
+			 isCustom: true,  //使用自定义窗体
+				 autoMove: true,
+				 position: [Lat, Lon],
+				 content: info,
+				 offset: new AMap.Pixel(16,-45)
+		 });
+		 infoWindow.open(map,marker.getPosition());
+	 }, 500);
+	 return info;
+ }
  function closeInfoWindow() {
         map.clearInfoWindow();
 		map.clearMap();
@@ -1760,9 +1801,12 @@ function editSafeArea(IMEI, lon, lat){
 				$('#idSafeAreaCity').val(data['city']);
 			});	
 		//}
+			if (map) {
+				map.clearInfoWindow();
+			}
 		
 		
-		});			
+		});
 
 } 
 //日历控件
@@ -1987,18 +2031,36 @@ function serachTerm(){
 function termGotoPage(p){
 	var k=$('#idTermKey').val();
 	var ID=$('#idSelectGroup').val();
-	$.post("ajs.php",{act:9003,page:p,Key:k,Group:ID}, function(s){
-		$("#idTermList").html(s);
-		if ($("#idTermList table").find("tr").length <= 1) {
-			if (p-1 <= 0) {
-				termGotoPage(1);
-				termPage=1;
-			} else {
-				termGotoPage(p-1);
-				termPage=p;
+	if (p <= 1) {
+		$.post("ajs.php",{act:9003,page:1,Key:k,Group:ID}, function(s){
+			$("#idTermList").html(s);
+		});
+	} else {
+		$.post("ajs.php",{act:9003,page:p-1,Key:k,Group:ID}, function(s){
+			$("#idTermList").html(s);
+			if ($("#idTermList table").find("tr").length <= 1) {
+				if (p-1 < 0) {
+					termGotoPage(1);
+					termPage=1;
+				} else {
+					termGotoPage(p-1);
+					termPage=p;
+				}
 			}
-		}
-	});
+		});
+	}
+	//$.post("ajs.php",{act:9003,page:p,Key:k,Group:ID}, function(s){
+	//    $("#idTermList").html(s);
+	//    if ($("#idTermList table").find("tr").length <= 1) {
+	//        if (p-1 < 0) {
+	//            termGotoPage(1);
+	//            termPage=1;
+	//        } else {
+	//            termGotoPage(p-1);
+	//            termPage=p;
+	//        }
+	//    }
+	//});
 	
 }
 function importTerm(){
@@ -2029,32 +2091,32 @@ function saveImportTerm(){
 			return;
 		}
 
-		if (_tmps[1] != "" && !checkPlate(_tmps[1])) {
-			Alert('车牌号码不正确', false);
-			return;
-		}
+		//if (_tmps[1] != "" && !checkPlate(_tmps[1])) {
+			//Alert('车牌号码不正确', false);
+			//return;
+		//}
 
-		if (_tmps[2] != "" && !checkPhone(_tmps[2])) {
-			Alert('设置号码不正确', false);
-			return;
-		}
+		//if (_tmps[2] != "" && !checkPhone(_tmps[2])) {
+			//Alert('设置号码不正确', false);
+			//return;
+		//}
 
-		if (_tmps[3].trim() != '' && !checkPhone(_tmps[3])) {
-			Alert('监听号码不正确', false);
-			return;
-		}
+		//if (_tmps[3].trim() != '' && !checkPhone(_tmps[3])) {
+			//Alert('监听号码不正确', false);
+			//return;
+		//}
 
-		if (_tmps.length > 4) {
-			if (_tmps[4].trim() != '' && !checkPhone(_tmps[4])) {
-				Alert('监听号码不正确', false);
-				return;
-			}
+		//if (_tmps.length > 4) {
+			//if (_tmps[4].trim() != '' && !checkPhone(_tmps[4])) {
+				//Alert('监听号码不正确', false);
+				//return;
+			//}
 
-			if (_tmps[5].trim() != '' && !checkPhone(_tmps[5])) {
-				Alert('监听号码不正确', false);
-				return;
-			}
-		}
+			//if (_tmps[5].trim() != '' && !checkPhone(_tmps[5])) {
+				//Alert('监听号码不正确', false);
+				//return;
+			//}
+		//}
 
 		var datas = [];
 		for (var j=0; j < _tmps.length; j++) {
@@ -2151,13 +2213,13 @@ function saveEditTerm(){
 		return 0;
 	}
 	if (Num != "" && !checkPlate(Num)) {
-		Alert("车牌号码不正确", false);
-		return;
+		//Alert("车牌号码不正确", false);
+		//return;
 	}
 
 	if (Phone != "" && !checkPhone(Phone)) {
-		Alert("设备号码不正确", false);
-		return;
+		//Alert("设备号码不正确", false);
+		//return;
 	}
 
 	var books = Book.split(",");
@@ -2167,8 +2229,8 @@ function saveEditTerm(){
 		}
 
 		if (!checkPhone(books[i])) {
-			Alert("监听号码不正确", false);
-			return;
+			//Alert("监听号码不正确", false);
+			//return;
 		}
 	}
 
@@ -2213,7 +2275,8 @@ function saveEditTerm(){
 			serachTerm();
 		
 		}
-		alert(s);});
+		alert(s);
+	});
 }// termGotoPage(termPage);var bak=curPanel;curPanel=0;search_1();curPanel=bak;search_2();
 function saveNewTerm(){
 	var IMEI=$('#idTermIMEI').val();
@@ -2235,13 +2298,13 @@ function saveNewTerm(){
 	}
 
 	if (Num != "" && !checkPlate(Num)) {
-		Alert("车牌号码不正确", false);
-		return;
+		//Alert("车牌号码不正确", false);
+		//return;
 	}
 
 	if (Phone != "" && !checkPhone(Phone)) {
-		Alert("设备号码不正确", false);
-		return;
+		//Alert("设备号码不正确", false);
+		//return;
 	}
 
 	var books = Book.split(",");
@@ -2251,8 +2314,8 @@ function saveNewTerm(){
 		}
 
 		if (!checkPhone(books[i])) {
-			Alert("监听号码不正确", false);
-			return;
+			//Alert("监听号码不正确", false);
+			//return;
 		}
 	}
 
@@ -2343,7 +2406,7 @@ function editTerm(IMEI,Num){
 							break;
 						}
 					}
-					if (_books.length > 1) {
+					if (_books.length > 0) {
 						$('#idTermBook').val(_books.join(","));
 					} else {
 						$('#idTermBook').val("");

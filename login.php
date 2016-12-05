@@ -17,18 +17,19 @@ if ($_REQUEST['act']=='exit'){
 	$_REQUEST['password']=$_COOKIE['password'];
 	$_REQUEST['autologin']=$_COOKIE['autologin'];
 	$_REQUEST['savepwd']=$_COOKIE['savepwd'];
-}else if(strlen($_REQUEST['Account'])>0){	$_SESSION['LQ_1']=$_SESSION['LQ_1']+1;
+}else if(strlen($_REQUEST['Account'])>0){	
+	$_SESSION['LQ_1']=$_SESSION['LQ_1']+1;
 	require_once("zbapi.php");
-	if(($_SESSION['LQ_1']>55)&&($_REQUEST['code']!=$_SESSION['randcode'])) { $JS="alert('\u9a8c\u8bc1\u7801\u9519\u8bef\uff01');window.document.location.href='login.php';";}
-	else {	
+	if(($_SESSION['LQ_1']>55)&&($_REQUEST['code']!=$_SESSION['randcode'])) { 
+		$JS="alert('\u9a8c\u8bc1\u7801\u9519\u8bef\uff01');window.document.location.href='login.php';";
+	} else {	
 		$Account=$_REQUEST['Account'];
 		$password=$_REQUEST['password'];
 		$zbapi=new zbapi($Account,$password);
 		if ($zbapi->login()!=0){
-			
-			 $JS= "alert('\u5e10\u53f7\u6216\u5bc6\u7801\u9519\u8bef\uff01');";	 
-		}
-		else{
+
+			$JS= "alert('\u5e10\u53f7\u6216\u5bc6\u7801\u9519\u8bef\uff01');";	 
+		} else{
 			$_SESSION['zbAcc']=$zbapi->uniqAcc;
 			$_SESSION['zbPwd']=$password;
 			$_SESSION['zbPhone']=$zbapi->phone;
@@ -39,7 +40,7 @@ if ($_REQUEST['act']=='exit'){
 				setcookie("password",$password,time()+3600*24*365);
 				setcookie("autologin",$_REQUEST['autologin'],time()+3600*24*365);
 				setcookie("savepwd",1,time()+3600*24*365);
-				
+
 			} else{
 				setcookie("Account",'',time()+3600*24*365);
 				setcookie("password",'',time()+3600*24*365);
@@ -49,15 +50,15 @@ if ($_REQUEST['act']=='exit'){
 			echo  "<script>window.document.location.href='index.php';</script>"; 
 			exit();
 		} 
-		
+
 	}
 }else {
 	$_REQUEST['Account']=$_COOKIE['Account'];
 	$_REQUEST['password']=$_COOKIE['password'];
 	$_REQUEST['autologin']=$_COOKIE['autologin'];
 	$_REQUEST['savepwd']=$_COOKIE['savepwd'];
-	 	 
-}?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+}?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html>
 <head>
 <meta charset="UTF-8">

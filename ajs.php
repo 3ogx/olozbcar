@@ -19,7 +19,7 @@ case 9001:
 		$zbapi->login();
 		$zbapi->loadDevInfo();
 		$devinfo=$zbapi->devinfo;
-		apc_store('zb_devinfo'.$_SESSION['zbAcc'],$zbapi->devinfo,600);
+		apc_store('zb_devinfo'.$_SESSION['zbAcc'],$zbapi->devinfo,1);
 	}
 	
 	
@@ -112,7 +112,7 @@ case 9002:
 		$zbapi->login();
 		$zbapi->loadDevInfo();
 		$devinfo=$zbapi->devinfo;
-		apc_store('zb_devinfo'.$_SESSION['zbAcc'],$zbapi->devinfo,600);
+		apc_store('zb_devinfo'.$_SESSION['zbAcc'],$zbapi->devinfo,6);
 	}
 	
 echo '<table border="1" cellspacing="0" cellpadding="0" ><tr>';
@@ -171,7 +171,7 @@ case 9003:
 		$zbapi->login();
 		$zbapi->loadDevInfo();
 		$devinfo=$zbapi->devinfo;
-		apc_store('zb_devinfo'.$_SESSION['zbAcc'],$zbapi->devinfo,600);
+		apc_store('zb_devinfo'.$_SESSION['zbAcc'],$zbapi->devinfo,6);
 	}
 	
 	
@@ -238,7 +238,7 @@ case 9004:
 		$zbapi->login();
 		$zbapi->loadDevInfo();
 		$devinfo=$zbapi->devinfo;
-		apc_store('zb_devinfo'.$_SESSION['zbAcc'],$zbapi->devinfo,600);
+		apc_store('zb_devinfo'.$_SESSION['zbAcc'],$zbapi->devinfo,1);
 	}
 	
 	$key=trim($_REQUEST['key']);
@@ -265,7 +265,7 @@ case 9005:
 		$zbapi->login();
 		$zbapi->loadDevInfo();
 		$devinfo=$zbapi->devinfo;
-		apc_store('zb_devinfo'.$_SESSION['zbAcc'],$zbapi->devinfo,600);
+		apc_store('zb_devinfo'.$_SESSION['zbAcc'],$zbapi->devinfo,1);
 	}
 	
 	
@@ -496,7 +496,7 @@ case 9012:
 		$zbapi->req(33,'{"Account":"'.$_SESSION['zbAcc'].'","IMEI":"'.$IMEI.'","PhoneBook":'.$Bookstr.'}') ;
 		if ($GroupID)  $zbapi->req(154,'{"Account":"'.$_SESSION['zbAcc'].'","GroupId":"'.$GroupID.'","Devices":[{"IMEI":"'.$IMEI.'","Number":"'.$Num.'","Phone":"'.$_REQUEST['Phone'].'"}]}') ;
 		$zbapi->loadDevInfo();
-		apc_store('zb_devinfo'.$_SESSION['zbAcc'],$zbapi->devinfo,600);	
+		apc_store('zb_devinfo'.$_SESSION['zbAcc'],$zbapi->devinfo,1);	
 		
 		echo '添加设备成功！';
 	}
@@ -518,7 +518,7 @@ case 9013:
 		if ($devinfo){
 			for ($i=0;$i<count($devinfo);$i++) if ($devinfo[$i]['IMEI']===$IMEI){
 				unset($devinfo[$i]);
-				apc_store('zb_devinfo'.$_SESSION['zbAcc'],$devinfo,600);
+				apc_store('zb_devinfo'.$_SESSION['zbAcc'],$devinfo,1);
 				break;
 			}
 			
@@ -566,7 +566,7 @@ case 9014:
 		$zbapi->req(33,'{"Account":"'.$_SESSION['zbAcc'].'","IMEI":"'.$IMEI.'","PhoneBook":'.$Bookstr.'}') ;
 		if ($GroupID)  $zbapi->req(154,'{"Account":"'.$_SESSION['zbAcc'].'","GroupId":"'.$GroupID.'","Devices":[{"IMEI":"'.$IMEI.'","Number":"'.$Num.'","Phone":"'.$_REQUEST['Phone'].'"}]}') ;
 		$zbapi->loadDevInfo();
-		apc_store('zb_devinfo'.$_SESSION['zbAcc'],$zbapi->devinfo,600);	
+		apc_store('zb_devinfo'.$_SESSION['zbAcc'],$zbapi->devinfo,1);	
 		
 		 
 		echo '修改设备成功！';
@@ -632,7 +632,7 @@ case 9015:
 	//} 
 	
 	$zbapi->loadDevInfo();
-	apc_store('zb_devinfo'.$_SESSION['zbAcc'],$zbapi->devinfo,600);	
+	apc_store('zb_devinfo'.$_SESSION['zbAcc'],$zbapi->devinfo,1);	
 	if ($err) $err="\r\n".$err;
 	
 	echo "成功导入[ $q ]台设备！$err ";
@@ -738,7 +738,7 @@ case 9019:
 	if ($q){
 		$zbapi->loadDevInfo();
 		$devinfo=$zbapi->devinfo;
-		apc_store('zb_devinfo'.$_SESSION['zbAcc'],$zbapi->devinfo,600);
+		apc_store('zb_devinfo'.$_SESSION['zbAcc'],$zbapi->devinfo,1);
 	}
 	
 	
@@ -769,7 +769,7 @@ case 9020:
 		if ($tmp)
 			for ($i=0;$i<count($tmp);$i++)if($tmp[$i]['IMEI']==$IMEI){
 				$tmp[$i]['State']=$v['State'];
-				apc_store('zb_devinfo'.$_SESSION['zbAcc'],$tmp,600);
+				apc_store('zb_devinfo'.$_SESSION['zbAcc'],$tmp,1);
 				break;
 			}
 			
@@ -819,7 +819,7 @@ case 9023:
 		$zbapi->login();
 		$zbapi->loadDevInfo();
 		$devinfo=$zbapi->devinfo;
-		apc_store('zb_devinfo'.$_SESSION['zbAcc'],$zbapi->devinfo,600);
+		apc_store('zb_devinfo'.$_SESSION['zbAcc'],$zbapi->devinfo,1);
 	}
 	
 	
@@ -875,7 +875,7 @@ case 9025:
 	$ret=json_decode($zbapi->req(139,'{"Account":"'.$_SESSION['zbAcc'].'","IMEI":"'.$IMEI.'"}'),true);
 	if ($ret['Code']=='0'){
 		$zbapi->loadDevInfo();
-		apc_store('zb_devinfo'.$_SESSION['zbAcc'],$zbapi->devinfo,600);
+		apc_store('zb_devinfo'.$_SESSION['zbAcc'],$zbapi->devinfo,6);
 	
 	
 	
@@ -977,7 +977,7 @@ case 9030:
 					unset($devinfo[$i]);
 				} 
 			}
-			apc_store('zb_devinfo'.$_SESSION['zbAcc'],$devinfo,600);			
+			apc_store('zb_devinfo'.$_SESSION['zbAcc'],$devinfo,6);			
 		}
 		
 		echo "删除分组成功";
@@ -997,7 +997,7 @@ case 9031:
 	$ret=json_decode($zbapi->req(155,'{"Account":"'.$_SESSION['zbAcc'].'","GroupId":"'.$GroupId.'"}'),true);
 	if ($ret['Code']=='0'){
 		$zbapi->loadDevInfo();
-		apc_store('zb_devinfo'.$_SESSION['zbAcc'],$zbapi->devinfo,600);
+		apc_store('zb_devinfo'.$_SESSION['zbAcc'],$zbapi->devinfo,6);
 		echo "删除分组成功.";
 	}
 	else errstr($ret['Code']);
@@ -1072,7 +1072,20 @@ case 9034:
 		echo '设置继电器密码 成功！';
 	}
 	else echo errstr($ret['Code']);
-break;	
+	break;	
+case 9040:
+	$groupId = $_REQUEST['groupId'];
+	require_once("zbapi.php");
+	$zbapi=new zbapi($_SESSION['zbAcc'],$_SESSION['zbPwd']);
+	$zbapi->login();
+	$zbapi->loadDevInfo();
+	$devinfo=$zbapi->groupinfo;
+	if ($groupId) {
+		echo json_encode($devinfo[$groupId]);
+	} else {
+		echo json_encode($devinfo);
+	}
+	break;
 }
 
 
