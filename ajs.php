@@ -213,7 +213,7 @@ case 9003:
 					echo "<tr>";
 					if ($_SESSION['zbRole']=='0') echo "<td><input  id='termIds' name='termIds' type='checkbox' value='$v[IMEI]'/></td>";
 					echo "<td>$v[IMEI]</td><td>$v[Num]</td><td>$v[DevPhone]</td><td>$book</td><td>$LoopDes</td><td>$v[Addr]</td><td>$v[Time]</td><td>$Stat</td><td>$v[EnableTime]</td><td>$v[Power]%</td>";
-					if ($_SESSION['zbRole']=='0') echo "<td><a href='javascript:' style='margin-right:5px;' onclick='OpenSwithCtrl(\"$v[IMEI]\");'>[继电器控制]</a><a href='javascript:' style='margin-right:5px;' onclick='reSetIMEIFac(\"$v[IMEI]\");'>[恢复出厂设置]</a><a href='javascript:' style='margin-right:5px;' onclick='editSafeArea(\"$v[IMEI]\");'>[安全区域]</a><a href='javascript:' style='margin-right:5px;' onclick='startIMEIWatch(\"$v[IMEI]\");'>[监听]</a><a href='javascript:' style='margin-right:5px;' onclick='editTerm(\"$v[IMEI]\",\"$v[Num]\")'>[修改]</a> <a href='javascript:' onclick='delIMEITerm(\"$v[IMEI]\")'>[删除]</a> </td>";
+					if ($_SESSION['zbRole']=='0') echo "<td><a href='javascript:' style='margin-right:5px;' onclick='OpenSwithCtrl(\"$v[IMEI]\", \"$v[ReplayState]\");'>[继电器控制]</a><a href='javascript:' style='margin-right:5px;' onclick='reSetIMEIFac(\"$v[IMEI]\");'>[恢复出厂设置]</a><a href='javascript:' style='margin-right:5px;' onclick='editSafeArea(\"$v[IMEI]\");'>[安全区域]</a><a href='javascript:' style='margin-right:5px;' onclick='startIMEIWatch(\"$v[IMEI]\");'>[监听]</a><a href='javascript:' style='margin-right:5px;' onclick='editTerm(\"$v[IMEI]\",\"$v[Num]\")'>[修改]</a> <a href='javascript:' onclick='delIMEITerm(\"$v[IMEI]\")'>[删除]</a> </td>";
 					echo "</tr>";
 					}
 			} else $skip--;
