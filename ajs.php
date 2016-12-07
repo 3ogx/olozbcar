@@ -652,7 +652,11 @@ case 9015:
 break;
 
 case 9016:
-	$alarminfo=apc_fetch('zb_alarmInfo'.$_SESSION['zbAcc']);
+	//$alarminfo=apc_fetch('zb_alarmInfo'.$_SESSION['zbAcc']);
+	require_once("zbapi.php");
+	$zbapi=new zbapi($_SESSION['zbAcc'],$_SESSION['zbPwd']);
+	$zbapi->login();
+	$alarminfo=$zbapi->loadAlarmInfo();
 	echo '<table border="1" cellspacing="0" cellpadding="0" ><tr><th>序号</th><th>设备编号</th><th>车牌号</th><th>通知时间</th><th>通知内容</th></tr>';
 	$i=0;
 	require_once 'page.php'; 

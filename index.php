@@ -907,8 +907,14 @@ function SaveSwithCtrl(Stat){
 		alert("请输入继电器密码.");
 		return 0;
 	}
-	if (!confirm("确定对车辆进行断油电")) {
-		return;
+	if (Stat == 0) {
+		if (!confirm("确定对车辆进行断油电")) {
+			return;
+		}
+	} else {
+		if (!confirm("确定对车辆进行恢复油电")) {
+			return;
+		}
 	}
 	$.post("ajs.php",{act:9033,IMEI:defaultIMEI,Pwd:Pwd,Stat:Stat}, function(s){
 		if (s.indexOf("成功")>2){
@@ -1512,7 +1518,6 @@ function track(IMEI){
 				for (var i=0; i < _pointArrs.length; i++) {
 					var angle = getAngle(_pointArrs[i], _pointArrs[i+1]);
 					var iconImg = createIcon(angle);
-					console.log(iconImg);
 					var _marker = new AMap.Marker({
 						position: _pointArrs[i],
 						icon: iconImg,
@@ -1520,6 +1525,24 @@ function track(IMEI){
 						autoRotation:true
 					});
 					_marker.setMap(map);
+
+					// bind event
+					var _click = function(e) {
+						//trackinfo(e);
+						console.log(e.target.getPosition());
+						console.log(this);
+						map.clearInfoWindow();
+						var infoWindow = new AMap.InfoWindow({
+							isCustom: true,  //使用自定义窗体
+								autoMove: true,
+								position: _pointArrs[i],
+								content: trackinfo(i),
+								offset: new AMap.Pixel(16,-45)
+						});
+						infoWindow.open(map,e.target.getPosition());
+
+					}
+					AMap.event.addListener(_marker, 'click', _click);
 				}
 
 				//$(lineArr).each(function(i,data){
