@@ -350,8 +350,8 @@ $JSStr="var pageTotal=new Array();var pagePos=new Array();pagePos[0]=1;pagePos[1
             
 			
             
-			<button id="switchCtrlBtn0" class="save right" style="margin-right:5px;display:none;" onclick="SaveSwithCtrl(1);">恢复油电</button>
-			<button id="switchCtrlBtn1" class="save right" style="margin-right:5px;display:none;" onclick="SaveSwithCtrl(0);">断油电</button>
+			<button id="switchCtrlBtn0" class="save right" style="margin-right:5px;" onclick="SaveSwithCtrl(1);">恢复油电</button>
+			<button id="switchCtrlBtn1" class="save right" style="margin-right:5px;" onclick="SaveSwithCtrl(0);">断油电</button>
         </div>  
 		<div class="inDiv" >
             
@@ -923,7 +923,7 @@ function OpenSwithCtrl(IMEI, replyStatus){
 	$("#idSwithCtrlNewPwd").val("");
 	$("#idSwithCtrlPwd").val("");
 	$("#idSwithCtrl").css("display","");
-	$("#switchCtrlBtn"+replyStatus).css("display", "");
+	//$("#switchCtrlBtn"+replyStatus).css("display", "");
 }
 function selAllUser(a){
 	$("[name='userIds']").each(function(){ if (!$(this).prop("disabled"))$(this).prop('checked',a.checked);});
@@ -1449,7 +1449,9 @@ function track(IMEI){
 	var TrackDate=$('#idTrackDate').val();
 	$.post("ajs.php",{act:9010,IMEI:IMEI,TrackDate:TrackDate},
 		function(s){
-			clearMap();
+			map.clearMap();
+			map.clearInfoWindow();
+			//clearMap();
 			//alert(str[0].is("ok"));
 			var str=s.split(String.fromCharCode(1));
 			$("#idTrackPos").css("left","-10px"); 
@@ -1506,8 +1508,9 @@ function track(IMEI){
 					_pointArrs.push(data);
 				});
 
-				for (var i=_pointArrs.length - 1; i > 0; i--) {
-					var angle = getAngle(_pointArrs[i], _pointArrs[i-1]);
+				//for (var i=_pointArrs.length - 1; i > 0; i--) {
+				for (var i=0; i < _pointArrs.length; i++) {
+					var angle = getAngle(_pointArrs[i], _pointArrs[i+1]);
 					var iconImg = createIcon(angle);
 					console.log(iconImg);
 					var _marker = new AMap.Marker({

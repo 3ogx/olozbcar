@@ -545,11 +545,21 @@ case 9014:
 	$Txt=str_replace("，",',',$Txt);
 	$Txt=str_replace(";",',',$Txt);
 	$Books=explode(',',$Txt);
-	$Bookstr='';
-	foreach ($Books as $v) if ($v){
-		if ($Bookstr) $Bookstr=$Bookstr.',"'.trim($v).',"';
-		else $Bookstr=$Bookstr.'"'.trim($v).',"';
+	$Bookstr = '';
+	$_books = array();
+	foreach ($Books as $v) {
+		if (empty($v)) {
+			continue;
+		}
+
+		$_books[] = trim($v);
+		//if ($v){
+		//    if ($Bookstr) $Bookstr=$Bookstr.',"'.trim($v).',"';
+		//} else {
+		//    $Bookstr=$Bookstr.'"'.trim($v).',"';
+		//}
 	}
+	$Bookstr = implode(",", $_books).",";
 	$Bookstr='['.$Bookstr.']';	//$ret=json_decode($zbapi->req(9,'{"Account":"'.$_SESSION['zbAcc'].'","Name":"'.$userName.'","SetAccount":"'.$userAcc.'","SetPwd":"'.$userPwd.'","Phone":"'.$userPhone.'","Email":"'.$userMail.'","Role":'.$userType.'}'),true);
 	$ret=json_decode($zbapi->req(5,'{"Account":"'.$_SESSION['zbAcc'].'","IMEI":"'.$IMEI.'","Number":"'.$Num.'"}'),true);
 	if ($ret['Code']=='0') {
