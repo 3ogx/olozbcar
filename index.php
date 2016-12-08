@@ -1526,17 +1526,34 @@ function track(IMEI){
 					});
 					_marker.setMap(map);
 
+					//var time = AddrTimes[i*2];
+					//var address= AddrTimes[i*2+1];
+					//console.log(AddrTimes);
+					//_marker.content = getMarkerInfo(AddrTimes[i], AddrTimes[i+1]);
+
 					// bind event
 					var _click = function(e) {
-						//trackinfo(e);
-						console.log(e.target.getPosition());
-						console.log(this);
+						var z=500-10*(map.getZoom()-11);
+						var idx=-1;
+						var best=-1;
+						var cur=-1;
+						for (var i=0;i<lineArr.length-1;i++){
+							cur=e.lnglat.distance([lineArr[i],lineArr[i+1]]);
+							if ((cur<best || best==-1) && cur<z){
+
+								idx=i;
+								best=cur;
+							}
+						}
+
+						if (idx < 0) return;
+
 						map.clearInfoWindow();
 						var infoWindow = new AMap.InfoWindow({
 							isCustom: true,  //使用自定义窗体
 								autoMove: true,
 								position: _pointArrs[i],
-								content: trackinfo(i),
+								content: trackinfo(idx),
 								offset: new AMap.Pixel(16,-45)
 						});
 						infoWindow.open(map,e.target.getPosition());
@@ -1586,6 +1603,45 @@ function track(IMEI){
 
 }	
 
+function getMarkerInfo(time, address) {
+	map.clearInfoWindow();
+
+	var info = document.createElement("div");
+	info.className = "info";
+
+	// 定义顶部标题
+	var top = document.createElement("div");
+	var titleD = document.createElement("div");
+	var closeX = document.createElement("img");
+	top.className = "info-top";
+	titleD.innerHTML = '时间:'+time;
+	closeX.src = "http://webapi.amap.com/images/close2.gif";
+	closeX.onclick =function (){map.clearInfoWindow();};
+
+	top.appendChild(titleD);
+	top.appendChild(closeX);
+	info.appendChild(top);
+
+	// 定义中部内容
+	var middle = document.createElement("div");
+	middle.className = "info-middle";
+	middle.style.backgroundColor = 'white';
+	middle.innerHTML = '<div class="inDiv" ><label for="name">地址: </label> <label for="name"> '+address+'</label></div>';
+	info.appendChild(middle);
+
+	// 定义底部内容
+	var bottom = document.createElement("div");
+	bottom.className = "info-bottom";
+	bottom.style.position = 'relative';
+	bottom.style.top = '0px';
+	bottom.style.margin = '0 auto';
+	var sharp = document.createElement("img");
+	sharp.src = "http://webapi.amap.com/images/sharp.png";
+	bottom.appendChild(sharp);
+	info.appendChild(bottom);
+
+	return info;
+}
 
 function trackinfo(idx) {
 	
