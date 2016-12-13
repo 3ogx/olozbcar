@@ -1432,7 +1432,6 @@ function createIcon(angle) {
 		}
 	}
 
-	console.log("/resources/images/arrow/arrow_" + adjAngles[adjIndex] + ".png");
 	icon = new AMap.Icon({image:"/resources/images/arrow/arrow_" + adjAngles[adjIndex] + ".png", imageSize:new AMap.Size(22,22)});  
 	return icon;  
 } 
@@ -1516,7 +1515,9 @@ function track(IMEI){
 
 				//for (var i=_pointArrs.length - 1; i > 0; i--) {
 				for (var i=0; i < _pointArrs.length; i++) {
-					var angle = getAngle(_pointArrs[i], _pointArrs[i+1]);
+					if ( _pointArrs[i+1] != undefined) {
+						var angle = getAngle(_pointArrs[i], _pointArrs[i+1]);
+					}
 					var iconImg = createIcon(angle);
 					var _marker = new AMap.Marker({
 						position: _pointArrs[i],
