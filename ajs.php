@@ -408,7 +408,13 @@ case 9010:
 	$addrs='';
 	$disp='';
 	$bakt=-1;
-	$ret=json_decode($zbapi->req(17,'{"Account":"'.$_SESSION['zbAcc'].'","IMEI":"'.$IMEI.'","Year":'.$yy.',"Mon":'.$mm.',"Day":'.$dd.'}'),true);//$zbapi->req(17,'{"Account":"'.$_SESSION['zbAcc'].'","IMEI":"'.$IMEI.'","Year":'.$yy.',"Mon":'.$mm.',"Day":'.$dd.'}'),true);
+	$key = md5($IMEI.$TrackDate);
+	if (apc_fetch($key)) {
+		$ret = apc_fetch($key);
+	} else {
+		$ret=json_decode($zbapi->req(17,'{"Account":"'.$_SESSION['zbAcc'].'","IMEI":"'.$IMEI.'","Year":'.$yy.',"Mon":'.$mm.',"Day":'.$dd.'}'),true);//$zbapi->req(17,'{"Account":"'.$_SESSION['zbAcc'].'","IMEI":"'.$IMEI.'","Year":'.$yy.',"Mon":'.$mm.',"Day":'.$dd.'}'),true);
+		apc_store(md5($IMEI.$TrackDate),$ret, 300);	
+	}
 	//echo $ret;exit;//print_r($ret);json_decode
 	if ($ret['Code']=='0'){
 		foreach ($ret['PosData'] as $v){
