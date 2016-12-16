@@ -35,11 +35,14 @@ $JSStr="var pageTotal=new Array();var pagePos=new Array();pagePos[0]=1;pagePos[1
 <link rel="stylesheet" href="resources/css/base.css" type="text/css" media="screen"/>
 <link rel="stylesheet" href="resources/js/jquery-ui-1.12.1/jquery-ui.min.css" type="text/css" media="screen" />
 <link rel="stylesheet" href="resources/js/jquery.showLoading-master/css/showLoading.css" type="text/css" media="screen" />
+<script src="resources/js/db.min.js"></script>
+<script src="resources/js/indexeddbshim.min.js"></script>
 <script src="resources/js/jquery-1.11.1.min.js"></script>
 <script src="resources/js/jquery-ui-1.12.1/jquery-ui.min.js"></script>
 <script src="resources/js/jquery.showLoading-master/js/jquery.showLoading.min.js"></script>
 <script src="resources/js/zhuobi.js"></script>
 <script src="resources/js/common.js"></script>
+<script src="resources/js/indexeddb.js"></script>
 <link rel="stylesheet" href="http://cache.amap.com/lbs/static/main1119.css"/>
     <script src="http://cache.amap.com/lbs/static/es5.min.js"></script>
     <script src="http://webapi.amap.com/maps?v=1.3&key=829110813b52c5982a834b2fb606622a&plugin=AMap.PolyEditor,AMap.CircleEditor,AMap.Geocoder"></script>
@@ -1452,6 +1455,10 @@ function track(IMEI){
 		$("#idtrackTab tr td:nth-child("+i+")").css("background-color","#EEE");
 	}
 	var TrackDate=$('#idTrackDate').val();
+
+	server.device.get(IMEI).then(function(results){
+	   console.log(results);
+	});
 	$.post("ajs.php",{act:9010,IMEI:IMEI,TrackDate:TrackDate},
 		function(s){
 			map.clearMap();
@@ -1459,6 +1466,7 @@ function track(IMEI){
 			//clearMap();
 			//alert(str[0].is("ok"));
 			var str=s.split(String.fromCharCode(1));
+			server.device.add({'IMEI':IMEI, 'data':str, 'date':TrackDate});
 			$("#idTrackPos").css("left","-10px"); 
 			if (str[1] == "ok"){
 
