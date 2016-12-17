@@ -1379,39 +1379,83 @@ function playTrack(speed){
 		map.clearInfoWindow();
 		isplay=1;
 		$('#idPlay').attr('src','resources/images/stop.jpg');
-		doplayTrack(speed);
+		//doplayTrack(speed);
+		demo(speed);
 	}else {
 		isplay=0;
+		clearTimeout(stopTimeout);
 		$('#idPlay').attr('src','resources/images/play.png');
 	}
 }	
 function doplayTrack(speed){
 	var normal = 1000, speed = 1;
-	var _need = normal / speed;
+	var _need = normal * (speed/10);
 	if (isplay==1 && marker){
 		if (TrackPos>719){
 			isplay=0;
 			$('#idPlay').attr('src','resources/images/play.png');
 			TrackPos=timeArr[0];
+			//--------------------------------------------------
+			// debugger;
+			// -------------------------------------------------- 
 			t(TrackPos);	
 			map.setCenter(lineArr[arrPosArr[TrackPos]]);			
 		} else {
+			//--------------------------------------------------
+			// debugger;
+			// -------------------------------------------------- 
 			TrackPos++ ;
 			for (var i=0;i<60 && TrackPos<720;i++) {
 				if(arrPosArr[TrackPos]>=0) {
 					TrackPos += speed;
 					break; 
-				} else {
-					TrackPos += speed;
-				}
+				} 
 			}
 			$("#idTrackPos").css("left",(TrackPos-10)+"px");
 			if (arrPosArr[TrackPos]>=0)marker.setPosition(lineArr[arrPosArr[TrackPos]]);
-			if (TrackPos % 5 ==1) map.setCenter(lineArr[arrPosArr[TrackPos]]);
+			if (TrackPos % 5 ==0) map.setCenter(lineArr[arrPosArr[TrackPos]]);
 			window.setTimeout(doplayTrack,_need);
 		}	
 	}
 	
+}
+
+var c = 0;
+var currentStatus = 0;
+function demo(speed) {
+	var normal = 1000;
+	currentStatus = 1;
+	$(lineArr).each(function(i, data){
+		if (c == i) {
+			marker.setPosition(data);
+			map.setCenter(data);
+			$("#idTrackPos").css("left",(i+10)+"px");
+		}
+
+		if (c + speed > lineArr.length) {
+			if (i == lineArr.length - 1) {
+				marker.setPosition(data);
+			}
+		}
+	});
+	if (speed > 1) {
+		c += speed;
+	} else {
+		c++;
+	}
+	if (c < lineArr.length) {
+		var args = Array.prototype.slice.call(arguments);
+		var self = arguments.callee;
+		stopTimeout = window.setTimeout(function() {
+			//--------------------------------------------------
+			// debugger;
+			// -------------------------------------------------- 
+			self.apply(null, args)
+		}, normal/speed);
+	} else {
+		c = 0;
+		currentStatus = 0;
+	}
 }
 
 
@@ -1456,12 +1500,10 @@ function track(IMEI){
 	//server.device.get(IMEI).then(function(results){
 	//   console.log(results);
 	//});
-	$.post("ajs.php",{act:9010,IMEI:IMEI,TrackDate:TrackDate},
+	$.post("ajs.php",{act:9041,IMEI:IMEI,TrackDate:TrackDate},
 		function(s){
 			map.clearMap();
 			map.clearInfoWindow();
-			//clearMap();
-			//alert(str[0].is("ok"));
 			var str=s.split(String.fromCharCode(1));
 			//server.device.add({'IMEI':IMEI, 'data':str, 'date':TrackDate});
 			$("#idTrackPos").css("left","-10px"); 
@@ -1469,41 +1511,50 @@ function track(IMEI){
 
 				timeArr=str[2].split(',');
 				tmpArr=str[3].split(',');
-				AddrTimes=str[4].split(String.fromCharCode(2));
+				//AddrTimes=str[4].split(String.fromCharCode(2));
 				if (timeArr.length==0){
 					lastTrackTime=0;
 					alert("当前无轨迹数据.");
 					return 0;
 				}
-				for(var i=0;i<tmpArr.length;i=i+2){
-					lineArr.push([tmpArr[i],tmpArr[i+1]]);
-				}
 
-				marker = new AMap.Marker({
-					map: map,
-						position: [tmpArr[timeArr.length*2-2],tmpArr[timeArr.length*2-1]],
-						icon: "/resources/images/endpoint.png",
-						offset: new AMap.Pixel(-10, -32),
-				autoRotation: true
-				});	
+				$(eval(str[5])).each(function(i,data){
+					lineArr.push([data['Lon'], data['Lat']]);
+					AddrTimes.push(data['Time']);
+					AddrTimes.push(data['Addr']);
+					$("#idtrackTab tr td:nth-child("+i+")").css("background-color","BLUE");
+					//timeArr.push(data['Time']);
+				});
 
+				var _end_position = eval(str[5])[lineArr.length-1];
+				var _start_postion = eval(str[5])[0];
 				marker = new AMap.Marker({
 					map: map,
-						position: [tmpArr[0],tmpArr[1]],
-						icon: "/resources/images/startpoint.png",
-						offset: new AMap.Pixel(-10, -32),
-				autoRotation: true
+					position: [_end_position['Lon'], _end_position['Lat']],
+					icon: "/resources/images/endpoint.png",
+					offset: new AMap.Pixel(-10, -32),
+					autoRotation: true
 				});	
 				marker = new AMap.Marker({
 					map: map,
-						position: [tmpArr[0],tmpArr[1]],
-						icon: "/resources/images/pointB.png",
-						offset: new AMap.Pixel(-100, -100),
-				autoRotation: true
+					position: [tmpArr[0],tmpArr[1]],
+					icon: "/resources/images/startpoint.png",
+					offset: new AMap.Pixel(-10, -32),
+					autoRotation: true
+				});	
+				marker = new AMap.Marker({
+					map: map,
+					position: [tmpArr[0],tmpArr[1]],
+					icon: "/resources/images/pointB.png",
+					offset: new AMap.Pixel(-100, -100),
+					autoRotation: true
 				});
 				window.setTimeout(function(){marker.setOffset(new AMap.Pixel(-31, -31));marker.setIcon("/resources/images/point.png");},1000);	
 				TrackPos=timeArr[0];	
-				$("#idTrackPos").css("left",(timeArr[0]-10)+"px");
+				//--------------------------------------------------
+				// $("#idTrackPos").css("left",(timeArr[0]-10)+"px");
+				// -------------------------------------------------- 
+				$("#idTrackPos").css("left","-10px");
 				var polyline = new AMap.Polyline({
 					map: map,
 						path: lineArr,
@@ -1513,12 +1564,8 @@ function track(IMEI){
 						strokeStyle: "solid"  //线样式
 				});
 
-				var _pointArrs = [];
-				$(lineArr).each(function(i,data){
-					_pointArrs.push(data);
-				});
+				var _pointArrs = lineArr;
 
-				//for (var i=_pointArrs.length - 1; i > 0; i--) {
 				for (var i=0; i < _pointArrs.length; i++) {
 					if ( _pointArrs[i+1] != undefined) {
 						var angle = getAngle(_pointArrs[i], _pointArrs[i+1]);
@@ -1532,11 +1579,6 @@ function track(IMEI){
 					});
 					_marker.setMap(map);
 
-					//var time = AddrTimes[i*2];
-					//var address= AddrTimes[i*2+1];
-					//console.log(AddrTimes);
-					//_marker.content = getMarkerInfo(AddrTimes[i], AddrTimes[i+1]);
-
 					// bind event
 					var _click = function(e) {
 						var z=500-10*(map.getZoom()-11);
@@ -1544,8 +1586,9 @@ function track(IMEI){
 						var best=-1;
 						var cur=-1;
 						for (var i=0;i<lineArr.length-1;i++){
-							cur=e.lnglat.distance([lineArr[i],lineArr[i+1]]);
-							if ((cur<best || best==-1) && cur<z){
+							cur=e.lnglat.distance(lineArr[i]);
+							//if ((cur<best || best==-1) && cur<z){
+							if ((cur<best || best==-1) ){
 
 								idx=i;
 								best=cur;
@@ -1568,40 +1611,31 @@ function track(IMEI){
 					AMap.event.addListener(_marker, 'click', _click);
 				}
 
-				//$(lineArr).each(function(i,data){
-				//    var _marker = new AMap.Marker({
-				//        position:data,
-				//        icon: "/resources/images/arrow2.gif",
-				//        offset: new AMap.Pixel(-5, -9),
-				//        autoRotation:true
-				//    });
-				//    _marker.setMap(map);
-				//    console.log(_marker.getAngle());
-				//});
-
+				//--------------------------------------------------
+				// debugger;
+				// -------------------------------------------------- 
 				for (var i=0;i<720;i++)arrPosArr[i]=-1;
 				for (var i=0;i<timeArr.length;i++){
-					$("#idtrackTab tr td:nth-child("+timeArr[i]+")").css("background-color","BLUE");
+					//$("#idtrackTab tr td:nth-child("+timeArr[i]+")").css("background-color","BLUE");
 					arrPosArr[timeArr[i]]=i;
 				}
 				map.setCenter([tmpArr[0],tmpArr[1]]);
 
-				map.on('click', function(e) {
-					var z=500-10*(map.getZoom()-11);
-					var idx=-1;
-					var best=-1;
-					var cur=-1;
-					for (var i=0;i<lineArr.length-1;i++){
-						cur=e.lnglat.distance([lineArr[i],lineArr[i+1]]);
-						if ((cur<best || best==-1) && cur<z){
+				//map.on('click', function(e) {
+				//    var z=500-10*(map.getZoom()-11);
+				//    var idx=-1;
+				//    var best=-1;
+				//    var cur=-1;
+				//    for (var i=0;i<lineArr.length-1;i++){
+				//        cur=e.lnglat.distance([lineArr[i],lineArr[i+1]]);
+				//        if ((cur<best || best==-1) && cur<z){
 
-							idx=i;
-							best=cur;
-						}
-					}
-					if (idx>-1)trackinfo(idx);
-
-				});
+				//            idx=i;
+				//            best=cur;
+				//        }
+				//    }
+				//    if (idx>-1)trackinfo(idx);
+				//});
 			}else alert(s);
 			lastTrackTime=new Date().getTime()-4500;
 

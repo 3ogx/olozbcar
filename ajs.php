@@ -21,14 +21,14 @@ case 9001:
 		$devinfo=$zbapi->devinfo;
 		apc_store('zb_devinfo'.$_SESSION['zbAcc'],$zbapi->devinfo,1);
 	}
-	
-	
+
+
 	switch (intval($_REQUEST['panel'])){
 		case 0:
 		case 3:
 			//$devinfo=apc_fetch('zb_devinfo'.$_SESSION['zbAcc']);
 			$i=0; 
-			
+
 			foreach($devinfo as $v){
 				if (!$key || strpos('a'.$v['IMEI'],$key) ||  strpos('a'.$v['Num'],$key)){
 					if ($skip==0){
@@ -53,14 +53,14 @@ case 9001:
 						}	
 					} else $skip--;
 				}
-				  
+
 			}
 		break;
-		
+
 		case 1:
 			//$devinfo=apc_fetch('zb_devinfo'.$_SESSION['zbAcc']);
 			$i=0; 
-			
+
 			foreach($devinfo as $v){
 				if (!$key || strpos('a'.$v['IMEI'],$key) ||  strpos('a'.$v['Num'],$key)){
 					if ($skip==0){
@@ -76,13 +76,13 @@ case 9001:
 						} 	
 					} else $skip--;
 				}
-				  
+
 			}
 		break;
 		case 2:
 			//$devinfo=apc_fetch('zb_devinfo'.$_SESSION['zbAcc']);
 			$i=0; 
-			
+
 			foreach($devinfo as $v){
 				if (!$key || strpos('a'.$v['IMEI'],$key) ||  strpos('a'.$v['Num'],$key)){
 					if ($skip==0){
@@ -98,11 +98,11 @@ case 9001:
 				}
 			}
 		break;
-	
+
 	}
-	
+
  break;
- 
+
 case 9002:
 	if (apc_exists('zb_devinfo'.$_SESSION['zbAcc']))
 		$devinfo=apc_fetch('zb_devinfo'.$_SESSION['zbAcc']);
@@ -114,7 +114,7 @@ case 9002:
 		$devinfo=$zbapi->devinfo;
 		apc_store('zb_devinfo'.$_SESSION['zbAcc'],$zbapi->devinfo,6);
 	}
-	
+
 echo '<table border="1" cellspacing="0" cellpadding="0" ><tr>';
 	if ($_SESSION['zbRole']=='0') echo '<th><input onclick="selAllTerm(this)"  type="checkbox" />全选</th>';
 	echo '<th>设备编号</th><th>ACC状态</th><th>车牌号 </th><th>设备号码</th><th>监听号码</th><th>周期定位</th><th>最后位置</th><th>最后定位时间</th><th>电量</th>';
@@ -135,7 +135,7 @@ echo '<table border="1" cellspacing="0" cellpadding="0" ><tr>';
 			$book=str_replace('"','',$book);
 			$book=str_replace(';',',',$book);
 			$book=str_replace(',,',',',$book);
-			
+
 			if ($v['AccType']==2) $Stat='';
 			elseif ($v['AccType']==0) $Stat='关闭';
 			else  $Stat='打开';
@@ -145,7 +145,7 @@ echo '<table border="1" cellspacing="0" cellpadding="0" ><tr>';
 				if ($v['LoopValue']==7) $LoopDes="按周 周日";
 				else $LoopDes="按周 周$v[LoopValue]";
 			} else $LoopDes="按天 $v[LoopValue]";
-			
+
 			echo "<tr>";
 			if ($_SESSION['zbRole']=='0') echo "<td><input  id='termIds' name='termIds' type='checkbox' value='$v[IMEI]'/></td><td>$v[IMEI]</td>";
 			echo "<td>$Stat</td><td>$v[Num]</td><td>$v[DevPhone]</td><td>$book</td><td>$LoopDes</td><td>$v[Addr]</td><td>$v[Time]</td><td>$v[Power]%</td>";
@@ -155,14 +155,14 @@ echo '<table border="1" cellspacing="0" cellpadding="0" ><tr>';
 		}
     echo '</table><div style="width:100%;height:30px;"><div class="pager">';
 	if ($_SESSION['zbRole']=='0') echo '<a href="#" onclick="newTerm();">添加设备</a><a href="#" onclick="importTerm();">导入设备</a><a href="#" onclick="delSelTerm();" style="margin-right:30px;">删除选中项</a>';
-	
+
 	pageft(count($devinfo),10,1,0,1,10,'','termGotoPage');
 	echo $pagenav,'</div></div>';	
 break;
 case 9003:
 	$key=trim($_REQUEST['Key']);
 	$Group=intval($_REQUEST['Group']);
-	
+
 	if (apc_exists('zb_devinfo'.$_SESSION['zbAcc']))
 		$devinfo=apc_fetch('zb_devinfo'.$_SESSION['zbAcc']);
 	else {
@@ -173,8 +173,8 @@ case 9003:
 		$devinfo=$zbapi->devinfo;
 		apc_store('zb_devinfo'.$_SESSION['zbAcc'],$zbapi->devinfo,6);
 	}
-	
-	
+
+
 	echo '<table border="1" cellspacing="0" cellpadding="0" ><tr>';
 	if ($_SESSION['zbRole']=='0') echo '<th><input onclick="selAllTerm(this)"  type="checkbox" />全选</th>';
 	echo '<th>设备编号</th><th>车牌号 </th><th>设备号码</th><th>监听号码</th><th>周期定位</th><th>最后位置</th><th>最后定位时间</th><th>ACC状态</th><th>开通时间</th><th>电量</th>';
@@ -201,15 +201,15 @@ case 9003:
 					if ($v['AccType']==2) $Stat='空';
 					elseif ($v['AccType']==0) $Stat='关闭';
 					else  $Stat='打开';
-			
+
 					if ($v['LoopType']==0) $LoopDes='取消';
 					else if ($v['LoopType']==1) $LoopDes="按月 $v[LoopValue]号";
 					else if ($v['LoopType']==2){
 						if ($v['LoopValue']==7) $LoopDes="按周 周日";
 						else $LoopDes="按周 周$v[LoopValue]";
 					} else $LoopDes="按天 $v[LoopValue]";
-				
-					
+
+
 					echo "<tr>";
 					if ($_SESSION['zbRole']=='0') echo "<td><input  id='termIds' name='termIds' type='checkbox' value='$v[IMEI]'/></td>";
 					echo "<td>$v[IMEI]</td><td>$v[Num]</td><td>$v[DevPhone]</td><td>$book</td><td>$LoopDes</td><td>$v[Addr]</td><td>$v[Time]</td><td>$Stat</td><td>$v[EnableTime]</td><td>$v[Power]%</td>";
@@ -221,7 +221,7 @@ case 9003:
 		}
     echo '</table><div style="width:100%;height:30px;"><div class="pager">';
 	if ($_SESSION['zbRole']=='0') echo '<a href="#" onclick="newTerm()">添加设备</a><a href="#" onclick="importTerm();">导入设备</a><a href="#" onclick="delSelTerm();" style="margin-right:30px;">删除选中项</a>';
-	
+
 	pageft($Total,10,1,0,1,10,'','termGotoPage');
 	echo $pagenav,'</div></div>';	
 break;  
@@ -229,7 +229,7 @@ case 9004:
 
 	$Total=0;
 	$Online=0;
-	
+
 	if (apc_exists('zb_devinfo'.$_SESSION['zbAcc']))
 		$devinfo=apc_fetch('zb_devinfo'.$_SESSION['zbAcc']);
 	else {
@@ -240,15 +240,15 @@ case 9004:
 		$devinfo=$zbapi->devinfo;
 		apc_store('zb_devinfo'.$_SESSION['zbAcc'],$zbapi->devinfo,1);
 	}
-	
+
 	$key=trim($_REQUEST['key']);
-	
+
 	foreach($devinfo as $v){
 		if (!$key || strpos('a'.$v['IMEI'],$key) ||  strpos('a'.$v['Num'],$key)){
 			$Total++;
 			if ($v['State']) $Online++;
 		}
-		  
+
 	}
 
 	echo "$Total,$Online";
@@ -267,18 +267,18 @@ case 9005:
 		$devinfo=$zbapi->devinfo;
 		apc_store('zb_devinfo'.$_SESSION['zbAcc'],$zbapi->devinfo,1);
 	}
-	
-	
+
+
 	$key=trim($_REQUEST['key']);
-	
+
 	foreach($devinfo as $v){
 		if (!$key || strpos('a'.$v['IMEI'],$key) ||  strpos('a'.$v['Num'],$key)){
 			$Total++;
 			if ($v['State']) $Online++;
 		}
-		  
+
 	}
-	
+
 	echo "$Total";
 break;
 
@@ -321,7 +321,7 @@ case 9006:
 					echo "<td>$v[Account]$me ";
 					 echo "</td><td>$usertype</td><td>$v[Name]</td><td>$v[Phone]</td><td>$v[Email]</td>";
 					if ($_SESSION['zbRole']=='0'){
-						
+
 						echo "<td><a href='javascript:' style='margin-right:5px;' onclick='editUser(\"$v[Account]\",\"$v[Name]\",\"$v[Phone]\",\"$v[Email]\",$v[Role])'>[修改]</a> "; if ($v['Phone']!=$_SESSION['zbAcc'] && $v['Account']!=$_SESSION['zbAcc']) echo"<a href='javascript:' onclick='delUserName(\"$v[Phone]\")'>[删除]</a> ";
 						if (($v['Name']==$_SESSION['zbUsername'])&&($v['Phone']==$_SESSION['zbPhone'] || $v['Account']==$_SESSION['zbAcc'])) {
 							echo "<a href='javascript:' style='margin-right:5px;' onclick='changeUserPer(\"$v[Phone]\")'>[转移权限]</a>";
@@ -335,8 +335,8 @@ case 9006:
 		}
     echo '</table><div style="width:100%;height:35px;"><div class="pager">';
 	if ($_SESSION['zbRole']=='0') echo '<a href="#" onclick=\'newUser("");\'>添加用户</a><a href="#" onclick=\'delSelUser();\' style="margin-right:30px;">删除选中用户</a>';
-	
-	
+
+
 	pageft($total,10,1,0,1,10,'','userGotoPage');
 	echo $pagenav,'</div></div>';	
 break;
@@ -352,7 +352,7 @@ case 9007:
 	require_once("zbapi.php");
 	$zbapi=new zbapi($_SESSION['zbAcc'],$_SESSION['zbPwd']);
 	$zbapi->login();
-	
+
 	$ret=json_decode($zbapi->req(133,'{"Account":"'.$_SESSION['zbAcc'].'","Name":"'.$userName.'","SetAccount":"'.$userAcc.'","SetPwd":"'.$userPwd.'","Phone":"'.$userPhone.'","Email":"'.$userMail.'","Role":'.$userType.'}'),true);
 	//$ret=json_decode($zbapi->req(9,'{"Account":"'.$_SESSION['zbAcc'].'","Name":"'.$userName.'","Phone":"'.$userPhone.'","Role":'.$userType.'}'),true);
 	if ($ret['Code']=='0') {
@@ -364,7 +364,7 @@ case 9007:
 break;
 case 9008:
 	$Phone=$_REQUEST['Phone'];
-	
+
 	//echo '{"Account":"'.$_SESSION['zbAcc'].'","Name":"'.$userName.'","SetAccount":"'.$userAcc.'","SetPwd":"'.$userPwd.'","Phone":"'.$userPhone.'","Email":"'.$userMail.'","Role":'.$userType.'}';exit;
 	require_once("zbapi.php");
 	$zbapi=new zbapi($_SESSION['zbAcc'],$_SESSION['zbPwd']);
@@ -379,7 +379,7 @@ case 9008:
 break;
 case 9009:
 	$Phone=$_REQUEST['Phone'];
-	
+
 	//echo '{"Account":"'.$_SESSION['zbAcc'].'","Name":"'.$userName.'","SetAccount":"'.$userAcc.'","SetPwd":"'.$userPwd.'","Phone":"'.$userPhone.'","Email":"'.$userMail.'","Role":'.$userType.'}';exit;
 	require_once("zbapi.php");
 	$zbapi=new zbapi($_SESSION['zbAcc'],$_SESSION['zbPwd']);
@@ -409,11 +409,15 @@ case 9010:
 	$disp='';
 	$bakt=-1;
 	$key = md5($IMEI.$TrackDate);
-	if (apc_fetch($key)) {
+	if (apc_exists($key) && 0) {
 		$ret = apc_fetch($key);
 	} else {
 		$ret=json_decode($zbapi->req(17,'{"Account":"'.$_SESSION['zbAcc'].'","IMEI":"'.$IMEI.'","Year":'.$yy.',"Mon":'.$mm.',"Day":'.$dd.'}'),true);//$zbapi->req(17,'{"Account":"'.$_SESSION['zbAcc'].'","IMEI":"'.$IMEI.'","Year":'.$yy.',"Mon":'.$mm.',"Day":'.$dd.'}'),true);
 		apc_store(md5($IMEI.$TrackDate),$ret, 300);	
+		//--------------------------------------------------
+		// $logger->logThis(sizeof($ret['PosData']));
+		// $logger->logThis(json_encode($ret['PosData']));
+		// -------------------------------------------------- 
 	}
 	//echo $ret;exit;//print_r($ret);json_decode
 	if ($ret['Code']=='0'){
@@ -432,7 +436,7 @@ case 9010:
 					$disp.=chr(2).$v['Time'].chr(2).$v['Addr'];
 				}	
 			}
-			
+
 		}
 	 if ($times)	
 		echo chr(1).'ok'.chr(1).$times.chr(1).$addrs.chr(1).$disp;
@@ -440,7 +444,7 @@ case 9010:
 	} 
 		//echo json_decode($ret['PosData']);//$jsonStr;//json_encode($ret['PosData']);
 	else echo errstr($ret['Code']);
-	
+
 break;
 
 case 9011:
@@ -466,11 +470,11 @@ case 9011:
 	}
 	//$ret=json_decode($zbapi->req(8,'{"Account":"'.$_SESSION['zbAcc'].'","Phone":"'.$Phone.'"}'),true);
 	//$ret=json_decode($zbapi->req(133,'{"Account":"'.$_SESSION['zbAcc'].'","Name":"'.$userName.'","SetAccount":"'.$userAcc.'","SetPwd":"'.$userPwd.'","Phone":"'.$userPhone.'","Email":"'.$userMail.'","Role":'.$userType.'}'),true);
-	
+
 	$userinfo=$zbapi->loadUserInfo();
 	apc_store('zb_userinfo'.$_SESSION['zbAcc'],$userinfo);	
 	echo "成功删除[ $q ]个用户！";
-	
+
 break;
 case 9012:
 	$IMEI=$_REQUEST['IMEI'];
@@ -491,7 +495,7 @@ case 9012:
 	$Bookstr='['.$Bookstr.']';		//$ret=json_decode($zbapi->req(9,'{"Account":"'.$_SESSION['zbAcc'].'","Name":"'.$userName.'","SetAccount":"'.$userAcc.'","SetPwd":"'.$userPwd.'","Phone":"'.$userPhone.'","Email":"'.$userMail.'","Role":'.$userType.'}'),true);
 	$ret=json_decode($zbapi->req(23,'{"Account":"'.$_SESSION['zbAcc'].'","IMEI":"'.$IMEI.'","Number":"'.$Num.'","Phone":"'.$_REQUEST['Phone'].'"}'),true);
 	if ($ret['Code']=='0') {
-		
+
 		//$zbapi->req(131,'{"Account":"'.$_SESSION['zbAcc'].'","IMEI":"'.$IMEI.'","Phone":"'.$_REQUEST['Phone'].'"}');
 		$zbapi->req(130,'{"Account":"'.$_SESSION['zbAcc'].'","IMEI":"'.$IMEI.'","Value":'.intval($_REQUEST['PreLocate']).'}');
 		$zbapi->req(129,'{"Account":"'.$_SESSION['zbAcc'].'","IMEI":"'.$IMEI.'","Value":'.intval($_REQUEST['SleepIntval']).'}');
@@ -503,7 +507,7 @@ case 9012:
 		if ($GroupID)  $zbapi->req(154,'{"Account":"'.$_SESSION['zbAcc'].'","GroupId":"'.$GroupID.'","Devices":[{"IMEI":"'.$IMEI.'","Number":"'.$Num.'","Phone":"'.$_REQUEST['Phone'].'"}]}') ;
 		$zbapi->loadDevInfo();
 		apc_store('zb_devinfo'.$_SESSION['zbAcc'],$zbapi->devinfo,1);	
-		
+
 		echo '添加设备成功！';
 	}
 
@@ -511,7 +515,7 @@ case 9012:
 break;
 case 9013:
 	$IMEI=$_REQUEST['IMEI'];
-	
+
 	//echo '{"Account":"'.$_SESSION['zbAcc'].'","Name":"'.$userName.'","SetAccount":"'.$userAcc.'","SetPwd":"'.$userPwd.'","Phone":"'.$userPhone.'","Email":"'.$userMail.'","Role":'.$userType.'}';exit;
 	require_once("zbapi.php");
 	$zbapi=new zbapi($_SESSION['zbAcc'],$_SESSION['zbPwd']);
@@ -527,15 +531,15 @@ case 9013:
 				apc_store('zb_devinfo'.$_SESSION['zbAcc'],$devinfo,1);
 				break;
 			}
-			
-			
-				
+
+
+
 		}
-		
-		
-		
-			
-		
+
+
+
+
+
 		echo '删除设备成功！';
 	} 
 	else echo errstr($ret['Code']);
@@ -569,8 +573,8 @@ case 9014:
 	$Bookstr='['.$Bookstr.']';	//$ret=json_decode($zbapi->req(9,'{"Account":"'.$_SESSION['zbAcc'].'","Name":"'.$userName.'","SetAccount":"'.$userAcc.'","SetPwd":"'.$userPwd.'","Phone":"'.$userPhone.'","Email":"'.$userMail.'","Role":'.$userType.'}'),true);
 	$ret=json_decode($zbapi->req(5,'{"Account":"'.$_SESSION['zbAcc'].'","IMEI":"'.$IMEI.'","Number":"'.$Num.'"}'),true);
 	if ($ret['Code']=='0') {
-		
-		
+
+
 		$zbapi->req(131,'{"Account":"'.$_SESSION['zbAcc'].'","IMEI":"'.$IMEI.'","Phone":"'.trim($_REQUEST['Phone']).'"}');
 		$zbapi->req(130,'{"Account":"'.$_SESSION['zbAcc'].'","IMEI":"'.$IMEI.'","Value":'.intval($_REQUEST['PreLocate']).'}');
 		$zbapi->req(129,'{"Account":"'.$_SESSION['zbAcc'].'","IMEI":"'.$IMEI.'","Value":'.intval($_REQUEST['SleepIntval']).'}');
@@ -583,8 +587,8 @@ case 9014:
 		if ($GroupID)  $zbapi->req(154,'{"Account":"'.$_SESSION['zbAcc'].'","GroupId":"'.$GroupID.'","Devices":[{"IMEI":"'.$IMEI.'","Number":"'.$Num.'","Phone":"'.$_REQUEST['Phone'].'"}]}') ;
 		$zbapi->loadDevInfo();
 		apc_store('zb_devinfo'.$_SESSION['zbAcc'],$zbapi->devinfo,1);	
-		
-		 
+
+
 		echo '修改设备成功！';
 	}
 
@@ -593,10 +597,10 @@ break;
 case 9015:
 	$Txt=str_replace("\r",'',$_REQUEST['Txt']);
 	$Txt=str_replace("，",',',$Txt);
-	
+
 	$line=explode("\n",$Txt);
 	$GroupID=intval($_REQUEST['GroupID']);
-	
+
 	require_once("zbapi.php");
 	$zbapi=new zbapi($_SESSION['zbAcc'],$_SESSION['zbPwd']);
 	$zbapi->login();
@@ -604,7 +608,7 @@ case 9015:
 	$err='';
 	$Post='';
 	foreach($line as $r){
-		
+
 		$v=explode(",",$r);
 	//	$Post.='{"IMEI":"'.trim($v[0]).'","Number":"'.trim($v[1]).'","Phone":"'.trim($v[2]).'"}';
 	//	$ret=json_decode($zbapi->req(140,'{"Account":"'.$_SESSION['zbAcc'].'","Devices":['.$Post.']}'),true);
@@ -618,43 +622,43 @@ case 9015:
 			if ($ret['Code']=='0') {
 				if ($v[3])
 				{
-					
+
 					$Bookstr='';
 					for ($i=3;$i<11;$i++){
-						
-						
+
+
 						$Phs=trim($v[$i]);
 						if ($Phs) {
 							if ($Bookstr) $Bookstr=$Bookstr.',"'.$Phs.',"';
 							else $Bookstr=$Bookstr.'"'.$Phs.',"';
 							}
 					}
-					
+
 					$Bookstr='['.$Bookstr.']';	
 					//echo '{"Account":"'.$_SESSION['zbAcc'].'","IMEI":"'.$IMEI.'","PhoneBook":'.$Bookstr.'}';
 					$zbapi->req(33,'{"Account":"'.$_SESSION['zbAcc'].'","IMEI":"'.$IMEI.'","PhoneBook":'.$Bookstr.'}') ;
-					
+
 				}
 				if ($GroupID)  $zbapi->req(154,'{"Account":"'.$_SESSION['zbAcc'].'","GroupId":"'.$GroupID.'","Devices":[{"IMEI":"'.$IMEI.'","Number":"'.trim($v[1]).'","Phone":"'.trim($v[2]).'"}]}') ;
 				$q++;
 			} else $err.="[$IMEI] ".errstr($ret['Code'])."\r\n";
-				
+
 		}	
-		
+
 	}
 	//$ret=json_decode($zbapi->req(9,'{"Account":"'.$_SESSION['zbAcc'].'","Name":"'.$userName.'","SetAccount":"'.$userAcc.'","SetPwd":"'.$userPwd.'","Phone":"'.$userPhone.'","Email":"'.$userMail.'","Role":'.$userType.'}'),true);
 	//if ($ret['Code']===0){
-		
+
 	//} 
-	
+
 	$zbapi->loadDevInfo();
 	apc_store('zb_devinfo'.$_SESSION['zbAcc'],$zbapi->devinfo,1);	
 	if ($err) $err="\r\n".$err;
-	
-	echo "成功导入[ $q ]台设备！$err ";
-	
 
-	
+	echo "成功导入[ $q ]台设备！$err ";
+
+
+
 break;
 
 case 9016:
@@ -687,18 +691,18 @@ case 9016:
 				else if ($v['Type']==6)$usertype='围栏报警(进)';
 				else if ($v['Type']==7)$usertype='设备脱落报警（光感脱落）';
 				else if ($v['Type']==8)$usertype='设备低电量报警（达到即将关机的阈值）';
-				
-				
-				
-		
+
+
+
+
 				echo "<tr><td>$v[AlarmId]</td><td>$v[IMEI]</td><td>$v[Number]</td><td>$v[Time]</td><td>$usertype</td></tr>";
 				}
 			} else $skip--;
 		}
 		}
     echo '</table><div style="width:100%;height:35px;"><div class="pager">';
-	
-	
+
+
 	pageft($total,10,1,0,1,10,'','alarmGotoPage');
 	echo $pagenav,'</div></div>';	
 break;
@@ -713,7 +717,7 @@ case 9017:
 		else echo chr(1),'1',chr(1), $ret['Name'],chr(1),$ret['Fence']['City'],chr(1);
 	} 
 	else  echo chr(1),'1',chr(1),'',chr(1),'',chr(1); 
-	
+
 break;
 case 9018:
 	$IMEI=$_REQUEST['IMEI'];
@@ -728,7 +732,7 @@ case 9018:
 	$zbapi->login();
 	if ($Type==1) $post='{"Account":"'.$_SESSION['zbAcc'].'","IMEI":"'.$IMEI.'","Type":'.$Type.',"Name":"'.$Name.'","Fence":{"City":"'.$City.'"}}';
 	else $post='{"Account":"'.$_SESSION['zbAcc'].'","IMEI":"'.$IMEI.'","Type":'.$Type.',"Name":"'.$Name.'","Fence":{"Radius":'.$Radius.',"Lon":"'.$Lng.'","Lat":"'.$Lat.'"}}';
-	
+
 	$ret=json_decode($zbapi->req(20,$post),true);
 	if ($ret['Code']=='0'){
 	echo "安全区域设置成功.";
@@ -737,7 +741,7 @@ case 9018:
 break;
 
 case 9019:
-	
+
 	$IMEI=explode(',',$_REQUEST['IMEI']);
 	//$devinfo=apc_fetch('zb_devinfo'.$_SESSION['zbAcc']);
 	//echo '{"Account":"'.$_SESSION['zbAcc'].'","Name":"'.$userName.'","SetAccount":"'.$userAcc.'","SetPwd":"'.$userPwd.'","Phone":"'.$userPhone.'","Email":"'.$userMail.'","Role":'.$userType.'}';exit;
@@ -750,24 +754,24 @@ case 9019:
 		$ret=json_decode($zbapi->req(141,'{"Account":"'.$_SESSION['zbAcc'].'","Devices":["'.$v.'"]}'),true);
 		if ($ret['Code']=='0'){
 			$q++;
-			
+
 		} 
 	}
-	
+
 	//$ret=json_decode($zbapi->req(133,'{"Account":"'.$_SESSION['zbAcc'].'","Name":"'.$userName.'","SetAccount":"'.$userAcc.'","SetPwd":"'.$userPwd.'","Phone":"'.$userPhone.'","Email":"'.$userMail.'","Role":'.$userType.'}'),true);
 	if ($q){
 		$zbapi->loadDevInfo();
 		$devinfo=$zbapi->devinfo;
 		apc_store('zb_devinfo'.$_SESSION['zbAcc'],$zbapi->devinfo,1);
 	}
-	
-	
-		
-		
-		
-		
+
+
+
+
+
+
 	echo '成功删除[ '.$q.' ]台设备！';
-	
+
 break;
 
 case 9020:
@@ -777,22 +781,22 @@ case 9020:
 	require_once("zbapi.php");
 	$zbapi=new zbapi($_SESSION['zbAcc'],$_SESSION['zbPwd']);
 	$zbapi->login();
-	
+
 	//echo $zbapi->req(3,'{"Devices":["'.$IMEI.'"]}');exit;
 	$ret=json_decode($zbapi->req(3,'{"Devices":["'.$IMEI.'"]}'),true);
 	if ($ret['Code']=='0'){
 		foreach($ret['DevInfo'] as $v);
 		echo chr(1),'0',chr(1),$v['State'],chr(1),$v['Addr'],chr(1),$v['Time'],chr(1),$v['Lat'],chr(1),$v['Lon'],chr(1),$v['Power'],chr(1),$v['AccType'],chr(1);
-		
+
 		$tmp=apc_fetch('zb_devinfo'.$_SESSION['zbAcc']);
-	
+
 		if ($tmp)
 			for ($i=0;$i<count($tmp);$i++)if($tmp[$i]['IMEI']==$IMEI){
 				$tmp[$i]['State']=$v['State'];
 				apc_store('zb_devinfo'.$_SESSION['zbAcc'],$tmp,1);
 				break;
 			}
-			
+
 	}
 	else echo chr(1),'1',chr(1),errstr($ret['Code']);
 break;
@@ -801,7 +805,7 @@ case 9021:
 	require_once("zbapi.php");
 	$zbapi=new zbapi($_SESSION['zbAcc'],$_SESSION['zbPwd']);
 	$zbapi->login();
-	
+
 	//echo $zbapi->req(3,'{"Devices":["'.$IMEI.'"]}');exit;
 	$ret=json_decode($zbapi->req(21,'{"Account":"'.$_SESSION['zbAcc'].'"}'),true);
 	if ($ret['Code']=='0'){
@@ -817,7 +821,7 @@ case 9022:
 	require_once("zbapi.php");
 	$zbapi=new zbapi($_SESSION['zbAcc'],$_SESSION['zbPwd']);
 	$zbapi->login();
-	
+
 	//echo $zbapi->req(3,'{"Devices":["'.$IMEI.'"]}');exit;
 	$ret=json_decode($zbapi->req(18,'{"Account":"'.$_SESSION['zbAcc'].'","Type":'.$Type.',"Value":"'.$Value.'"}'),true);
 	if ($ret['Code']=='0'){
@@ -830,7 +834,7 @@ break;
 
 case 9023:
     $IMEI=$_REQUEST['IMEI'];
-	
+
 	if (apc_exists('zb_devinfo'.$_SESSION['zbAcc']))
 		$devinfo=apc_fetch('zb_devinfo'.$_SESSION['zbAcc']);
 	else {
@@ -841,8 +845,8 @@ case 9023:
 		$devinfo=$zbapi->devinfo;
 		apc_store('zb_devinfo'.$_SESSION['zbAcc'],$zbapi->devinfo,1);
 	}
-	
-	
+
+
 	foreach($devinfo as $v){
 		if ($v['IMEI']==$IMEI){
 			$book=str_replace("[",'',$v['PhoneBook']);//implode(';',$v['PhoneBook']);$Txt=str_replace("；",';',$_REQUEST['Book']);
@@ -850,16 +854,16 @@ case 9023:
 			$book=str_replace('"','',$book);
 			$book=str_replace(';',',',$book);
 			$book=str_replace(' ','',$book);
-			
+
 			echo chr(1),$v['DevPhone'],chr(1),$v['PreLocate'],chr(1),$v['LocIntval'],chr(1),$v['LoopType'],chr(1),$v['LoopValue'],chr(1),$v['SleepIntval'],chr(1),$book,chr(1),$v['ReportIntval'],chr(1),$v['AlarmState'],chr(1),$v['GroupId'];
-			
-			
+
+
 			exit;
 			//echo chr(1),$v[''];
 		}
-		  
+
 	}
-	
+
 break;
 case 9024:
 
@@ -890,15 +894,15 @@ case 9025:
 	 $IMEI=$_REQUEST['IMEI'];
 	$zbapi=new zbapi($_SESSION['zbAcc'],$_SESSION['zbPwd']);
 	$zbapi->login();
-	
+
 	//echo $zbapi->req(3,'{"Devices":["'.$IMEI.'"]}');exit;
 	$ret=json_decode($zbapi->req(139,'{"Account":"'.$_SESSION['zbAcc'].'","IMEI":"'.$IMEI.'"}'),true);
 	if ($ret['Code']=='0'){
 		$zbapi->loadDevInfo();
 		apc_store('zb_devinfo'.$_SESSION['zbAcc'],$zbapi->devinfo,6);
-	
-	
-	
+
+
+
 		echo '恢复出厂设置成功！';
 	}
 	else echo errstr($ret['Code']);
@@ -909,7 +913,7 @@ case 9026:
 	 $IMEI=$_REQUEST['IMEI'];
 	$zbapi=new zbapi($_SESSION['zbAcc'],$_SESSION['zbPwd']);
 	$zbapi->login();
-	
+
 	//echo $zbapi->req(3,'{"Devices":["'.$IMEI.'"]}');exit;
 	$ret=json_decode($zbapi->req(149,'{"Account":"'.$_SESSION['zbAcc'].'","IMEI":"'.$IMEI.'"}'),true);
 	if ($ret['Code']=='0'){
@@ -918,14 +922,14 @@ case 9026:
 	else echo errstr($ret['Code']);
 break;
 
-  
+
 case 9027:
 
 	require_once("zbapi.php");
 	 $IMEI=$_REQUEST['IMEI'];
 	$zbapi=new zbapi($_SESSION['zbAcc'],$_SESSION['zbPwd']);
 	$zbapi->login();
-	
+
 	//echo $zbapi->req(3,'{"Devices":["'.$IMEI.'"]}');exit;
 	$ret=json_decode($zbapi->req(32,'{"Account":"'.$_SESSION['zbAcc'].'","IMEI":"'.$IMEI.'"}'),true);
 	if ($ret['Code']=='0'){
@@ -940,18 +944,18 @@ case 9028:
 	 $Group=$_REQUEST['Group'];
 	$zbapi=new zbapi($_SESSION['zbAcc'],$_SESSION['zbPwd']);
 	$zbapi->login();
-	
+
 	//echo $zbapi->req(3,'{"Devices":["'.$IMEI.'"]}');exit;
 	$ret=json_decode($zbapi->req(159,'{"Account":"'.$_SESSION['zbAcc'].'","GroupName":"'.$Group.'"}'),true);
 	if ($ret['Code']=='0'){
 		echo chr(1),'0',chr(1), '<option selected="selected" value="0">全部</option>';
-		 
+
 	 $ret=json_decode($zbapi->req(157,'{"Account":"'.$_SESSION['zbAcc'].'"}'),true);
 	 if ($ret['Code']=='0'){
 		 foreach ($ret['Groups'] as $v ) if ($v)
 			 echo "<option value=\"$v[GroupId]\">$v[GroupName]</option>";
 	 } else echo chr(1),'1',chr(1),errstr($ret['Code']);
-		 
+
 	}
 	else echo chr(1),'1',chr(1),errstr($ret['Code']);
 break;
@@ -964,18 +968,18 @@ case 9029:
 	 $Group=$_REQUEST['Group'];
 	$zbapi=new zbapi($_SESSION['zbAcc'],$_SESSION['zbPwd']);
 	$zbapi->login();
-	
+
 	//echo $zbapi->req(3,'{"Devices":["'.$IMEI.'"]}');exit;
 	$ret=json_decode($zbapi->req(153,'{"Account":"'.$_SESSION['zbAcc'].'","GroupId":"'.$ID.'","GroupName":"'.$Group.'"}'),true);
 	if ($ret['Code']=='0'){
 		echo chr(1),'0',chr(1), '<option selected="selected" value="0">全部</option>';
-		 
+
 	 $ret=json_decode($zbapi->req(157,'{"Account":"'.$_SESSION['zbAcc'].'"}'),true);
 	 if ($ret['Code']=='0'){
 		 foreach ($ret['Groups'] as $v ) if ($v)
 			 echo "<option value=\"$v[GroupId]\">$v[GroupName]</option>";
 	 } else echo chr(1),'1',chr(1),errstr($ret['Code']);
-		 
+
 	}
 	else echo chr(1),'1',chr(1),errstr($ret['Code']);
 break;
@@ -986,7 +990,7 @@ case 9030:
 	$GroupId=intval($_REQUEST['GroupId']); 
 	$zbapi=new zbapi($_SESSION['zbAcc'],$_SESSION['zbPwd']);
 	$zbapi->login();
-	
+
 	//echo $zbapi->req(3,'{"Devices":["'.$IMEI.'"]}');exit;
 	$ret=json_decode($zbapi->req(155,'{"Account":"'.$_SESSION['zbAcc'].'","GroupId":"'.$GroupId.'"}'),true);
 	if ($ret['Code']=='0'){
@@ -999,7 +1003,7 @@ case 9030:
 			}
 			apc_store('zb_devinfo'.$_SESSION['zbAcc'],$devinfo,6);			
 		}
-		
+
 		echo "删除分组成功";
 	}
 	else errstr($ret['Code']);
@@ -1012,7 +1016,7 @@ case 9031:
 	$GroupId=$_REQUEST['GroupId']; 
 	$zbapi=new zbapi($_SESSION['zbAcc'],$_SESSION['zbPwd']);
 	$zbapi->login();
-	
+
 	//echo $zbapi->req(3,'{"Devices":["'.$IMEI.'"]}');exit;
 	$ret=json_decode($zbapi->req(155,'{"Account":"'.$_SESSION['zbAcc'].'","GroupId":"'.$GroupId.'"}'),true);
 	if ($ret['Code']=='0'){
@@ -1033,12 +1037,12 @@ case 9032:
 		$post.=',"LoopLocType":'.intval($_REQUEST['LoopType']);
 		if ($_REQUEST['LoopValue']) $post.=',"LoopLocValue":"'.$_REQUEST['LoopValue'].'"';
 	} 
-	
+
 	if (intval($_REQUEST['SleepIntval'])>=0) $post.=',"SleepValue":'.intval($_REQUEST['SleepIntval']);
 	if (intval($_REQUEST['AlarmStat'])>=0) $post.=',"AlarmState":'.intval($_REQUEST['AlarmStat']);
 	if (intval($_REQUEST['ReportIntval'])>=0) $post.=',"ReportVal":'.intval($_REQUEST['ReportIntval']);
 
-	
+
 	require_once("zbapi.php");
 	$zbapi=new zbapi($_SESSION['zbAcc'],$_SESSION['zbPwd']);
 	$zbapi->login();
@@ -1056,7 +1060,7 @@ case 9032:
 //echo '{"Account":"'.$_SESSION['zbAcc'].'","GroupId":"'.$ID.'"'.$post.'}';	//$ret=json_decode($zbapi->req(9,'{"Account":"'.$_SESSION['zbAcc'].'","Name":"'.$userName.'","SetAccount":"'.$userAcc.'","SetPwd":"'.$userPwd.'","Phone":"'.$userPhone.'","Email":"'.$userMail.'","Role":'.$userType.'}'),true);
 	$ret=json_decode($zbapi->req(156,'{"Account":"'.$_SESSION['zbAcc'].'","GroupId":"'.$ID.'"'.$post.'}'),true);
 	if ($ret['Code']=='0') {
-		
+
 		$zbapi->loadDevInfo();
 		apc_store('zb_devinfo'.$_SESSION['zbAcc'],$zbapi->devinfo);	
 		echo '修改分组参数成功！';
@@ -1067,14 +1071,14 @@ case 9033:
 	$IMEI=$_REQUEST['IMEI'];
 	$Pwd=$_REQUEST['Pwd'];
 	$Stat=intval($_REQUEST['Stat']);
-		
+
 	require_once("zbapi.php");
 	$zbapi=new zbapi($_SESSION['zbAcc'],$_SESSION['zbPwd']);
 	$zbapi->login();
 //	echo '{"Account":"'.$_SESSION['zbAcc'].'","Pwd":"'.md5($_SESSION['zbAcc'].$_SESSION['zbPwd']).'","IMEI":"'.$IMEI.'","DevPwd":"'.md5($_SESSION['zbAcc'].$Pwd).'","Switch":'.$Stat.'}';
 	$ret=json_decode($zbapi->req(161,'{"Account":"'.$_SESSION['zbAcc'].'","Pwd":"'.md5($_SESSION['zbAcc'].$_SESSION['zbPwd']).'","IMEI":"'.$IMEI.'","DevPwd":"'.md5($_SESSION['zbAcc'].$Pwd).'","Switch":'.$Stat.'}'),true);
 	if ($ret['Code']=='0') {
-		
+
 		if ($Stat) echo '恢复油电成功！';
 		else echo '断油电成功！';
 	}
@@ -1106,6 +1110,62 @@ case 9040:
 		echo json_encode($devinfo);
 	}
 	break;
+case 9041:
+	$IMEI=trim($_REQUEST['IMEI']);
+	$TrackDate=$_REQUEST['TrackDate'];
+	$curD=strtotime($TrackDate);
+	$yy=date('Y',$curD);
+	$mm=date('m',$curD);
+	$dd=date('d',$curD);
+	require_once("zbapi.php");
+	$zbapi=new zbapi($_SESSION['zbAcc'],$_SESSION['zbPwd']);
+	$zbapi->login();
+	$times='';
+	$addrs='';
+	$disp='';
+	$bakt=-1;
+	$key = md5($IMEI.$TrackDate);
+	if (apc_exists($key) && 0) {
+		$ret = apc_fetch($key);
+	} else {
+		$ret=json_decode($zbapi->req(17,'{"Account":"'.$_SESSION['zbAcc'].'","IMEI":"'.$IMEI.'","Year":'.$yy.',"Mon":'.$mm.',"Day":'.$dd.'}'),true);
+		apc_store(md5($IMEI.$TrackDate),$ret, 300);	
+		//--------------------------------------------------
+		// $logger->logThis(sizeof($ret['PosData']));
+		// $logger->logThis(json_encode($ret['PosData']));
+		// -------------------------------------------------- 
+	}
+	if ($ret['Code']=='0'){
+		foreach ($ret['PosData'] as $v){
+			$curD=strtotime($v['Time']);
+			$t=intval((date('H',$curD)*60+date('i',$curD))/2);
+			if ($bakt!=$t){
+				$bakt=$t;
+				if (!$times){
+					$times=$t;
+					$addrs=$v['Lon'].','.$v['Lat'];
+					$disp=$v['Time'].chr(2).$v['Addr'];
+				} else {
+					$times.=','.$t;
+					$addrs.=','.$v['Lon'].','.$v['Lat'];
+					$disp.=chr(2).$v['Time'].chr(2).$v['Addr'];
+				}	
+			}
+
+		}
+
+		if ($times) {
+			echo chr(1).'ok'.chr(1).$times.chr(1).$addrs.chr(1).$disp.chr(1).json_encode($ret['PosData']);
+			//echo chr(1).'ok'.chr(1).json_encode($ret['PosData']);
+		} else {
+			echo '没有当天的车辆轨迹数据.';
+		}
+	} else {
+		echo errstr($ret['Code']);
+	}
+
+break;
+
 }
 
 
